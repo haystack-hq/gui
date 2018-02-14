@@ -7,7 +7,8 @@
   "author": "Andrew Venglar",
   "scripts": {
     "start": "electron .",
-    "package": "electron-packager ./ --platform=darwin --arch=x64 --out=out --overwrite"
+    "package": "electron-packager ./ --platform=darwin --arch=x64 --out=out --overwrite",
+    "test": "nyc mocha  --recursive"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,9 @@
     "electron": "^1.2.7"
   },
   "dependencies": {
+    "chai": "^4.1.2",
+    "chai-events": "0.0.1",
+    "mocha": "^5.0.0",
     "ps-list": "^4.0.0"
   }
 }
