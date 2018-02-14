@@ -2,20 +2,23 @@ const processes = null;
 
 class ProcessWatcherService {
 	constructor(options){
-		var self = this;
-		//todo: add check for required params (changeCallback and processMonitor)
-		this.changeCallback = null;
+        if(typeof options == 'undefined' || options.processMonitor == null )
+        {
+            throw new ReferenceError('Missing one of required properties.')
+        }
+        this.changeCallback = null;
 		this.interval = 500;
 		this.processMonitor = options.processMonitor;
         this.polling = true;
     }
 
     poll(){
+        var self = this;
         if(this.polling){
-            self.processMonitor().then(processes => {
+            this.processMonitor().then(processes => {
                     var filtered = ProcessWatcherService.filterProcesses(processes);
                     self.changeCallback(filtered);
-                    setTimeout(self.poll, self.interval);
+                    setTimeout(function() { self.poll() }, self.interval);
                 }
             )
         }

@@ -1,21 +1,28 @@
+const {app} = require('electron');
+const path = require('path');
+const basePath = (typeof app == 'undefined') ? __dirname : app.getAppPath();
+const assetsDirectory = path.join(basePath, 'assets');
+const imgDirectory = path.join(assetsDirectory, 'images');
+
+
 class MountMenuListItem {
-    constructor(options, position = null){
-        if(!options.name || typeof options.status == 'undefined'){
+    constructor(options){
+        if(!options.identifier || options.status == null){
             throw new ReferenceError('Missing one of required properties.')
         }
-        this.label = options.name;
-        this.image = this.getImageForStatus(options.status);
-        this.position = position ? 'endof=' + position : 'endof=mounts';
+        this.label = options.identifier;
+        this.icon = MountMenuListItem.getIconForStatus(options.status);
+        this.position = options.position != null ? 'endof=' + options.position : 'endof=mounts';
     }
 
-    getImageForStatus(status) {
-        const imageMap = {
-            0: 	'redCircle.png',
-            1: 	'greenCircle.png',
-            2: 	'yellowCircle.png'
+    static getIconForStatus(status) {
+        const iconMap = {
+            0: 	'circleRed.png',
+            1: 	'circleGreen.png',
+            2: 	'circleYellow.png'
         };
 
-        return path.join(imgDirectory, imageMap[status]);
+        return path.join(imgDirectory, iconMap[status]);
     }
 }
 

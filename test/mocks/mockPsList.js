@@ -4,7 +4,7 @@ function mock() {
 	return Promise.resolve([
 		{ pid: 254,
 			name: 'unison',
-			cmd: 'unison test/process/fired/by/unison',
+			cmd: 'unison test/process/fired/by/unison -label=eyJzeW5jIjoid2F0Y2giLCJpZGVudGlmaWVyIjoiYW5kcmV3LXdhcm1vdGgifQ==',
 			cpu: '0.0' },
 		{ pid: 264,
 			name: 'thermald',

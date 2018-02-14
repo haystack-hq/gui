@@ -3,10 +3,11 @@ const MountListItemConverter = require('./ui/mountListItemConverter');
 
 class MountList {
 	constructor(options){
-		var self = this;
+		let self = this;
 		this.mounts = [];
 		this.checkedIds = [];
 		this.processWatcher = options.processWatcher;
+		this.eventEmitter = options.eventEmitter;
 		this.onChangeEvent = options.onChangeEvent;
 
 		this.processWatcher.onChange(function(processes){
@@ -23,15 +24,24 @@ class MountList {
 
 			//iterate over them
 			newProcesses.forEach(process => {
+				var decoded = MountList.decodeLabel(process);
+
+				//add check to make sure we aren't adding updates as new mounts
 				var mountOptions = {
-					name: process.cmd,
-					unisonPid: process.pid,
-					fswatchPid: process.pid
+					identifier: decoded.identifier,
+					cmd: process.cmd,
+					unisonPid: process.pid
 				};
+
 				var mount = new Mount(mountOptions);
 				self.addItem(mount);
 			});
+
+			//look for changes to items
+			//fire change event --
 		});
+
+		this.processWatcher.startPolling();
 
 	}
 
@@ -48,8 +58,7 @@ class MountList {
 	};
 
 	onChange(){
-		var menuItems = new MountListItemConverter(this.mounts);
-		appEvents.emit(this.onChangeEvent, {items: menuItems});
+		this.eventEmitter.emit(this.onChangeEvent, {items: this.mounts});
 	}
 
 	checkProcessesExist(processes, mount){
