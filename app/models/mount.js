@@ -10,7 +10,7 @@ class Mount {
 		this.identifier = options.identifier;
 		this.cmd = options.cmd;
 		this.unisonPid = options.unisonPid;
-		this.status = 1
+		this.status = 1;
 	}
 }
 

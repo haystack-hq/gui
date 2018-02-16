@@ -7,16 +7,16 @@ class ProcessWatcherService {
             throw new ReferenceError('Missing one of required properties.')
         }
         this.changeCallback = null;
-		this.interval = 500;
+		this.interval = 0;
 		this.processMonitor = options.processMonitor;
         this.polling = true;
     }
 
     poll(){
-        var self = this;
+        const self = this;
         if(this.polling){
             this.processMonitor().then(processes => {
-                    var filtered = ProcessWatcherService.filterProcesses(processes);
+                    let filtered = ProcessWatcherService.filterProcesses(processes);
                     self.changeCallback(filtered);
                     setTimeout(function() { self.poll() }, self.interval);
                 }

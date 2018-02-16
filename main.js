@@ -3,7 +3,7 @@ const EventEmitter = require('events');
 
 const path = require('path');
 const assetsDirectory = path.join(__dirname, 'assets');
-imgDirectory = path.join(assetsDirectory, 'images');
+const imgDirectory = path.join(assetsDirectory, 'images');
 
 const appEvents = new EventEmitter();
 
@@ -30,6 +30,6 @@ app.on('ready', () => {
 	let menu = new MainMenu({
 		tray: tray,
 		eventEmitter: appEvents,
-		subscribeToChange: 'mount-list-change'
+		subscribeToChange: 'mount-list-change',
 	});
 });

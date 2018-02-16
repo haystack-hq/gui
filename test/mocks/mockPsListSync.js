@@ -1,6 +1,11 @@
 'use strict';
 function mock() {
 	let testProcesses = [
+		{ pid: 254,
+			name: 'unison',
+			cmd: 'unison test/process/fired/by/unison -label=eyJzeW5jIjoid2F0Y2giLCJpZGVudGlmaWVyIjoiYW5kcmV3LXdhcm1vdGgifQ==',
+			cpu: '0.0'
+		},
 		{ pid: 255,
 			name: 'unison',
 			cmd: 'xargs -n1 -I{} unison test/process/fired/by/unison -label=eyJzeW5jIjoid2F0Y2giLCJpZGVudGlmaWVyIjoiYW5kcmV3LXdhcm1vdGgifQ==',

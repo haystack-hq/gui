@@ -3,9 +3,8 @@ chai.use(require("chai-events"));
 
 const EventEmitter = require("events");
 
-
 const MockPsList = require('../mocks/mockPsList');
-const MockPsList2 = require('../mocks/mockPsList');
+const MockPsListSync = require('../mocks/mockPsListSync');
 const ProcessWatcher = require('../../app/models/processWatcherService');
 const MountList = require('../../app/models/mountList');
 const Mount = require('../../app/models/mount');
@@ -78,6 +77,45 @@ describe('mountList', function() {
 				chai.expect(object.items.length).to.equal(2);
 			}
 		});
+	});
+
+	it('should change statuses when syncing', function(){
+		let processWatcher = new ProcessWatcher({processMonitor: MockPsList});
+
+		let mountList = new MountList({
+			processWatcher: processWatcher,
+			onChangeEvent: 'mount-list-change3',
+			eventEmitter: appEvents
+		});
+
+		setTimeout(() => {
+			processWatcher.stopPolling();
+			processWatcher.processMonitor = MockPsListSync;
+			processWatcher.startPolling();
+		}, 100);
+
+		setTimeout(() => {
+			processWatcher.stopPolling();
+			processWatcher.processMonitor = MockPsList;
+			processWatcher.startPolling();
+		}, 200);
+
+		setTimeout(() => {
+			processWatcher.stopPolling();
+		}, 300);
+
+		let i = 0;
+		appEvents.on('mount-list-change3', (object) => {
+			if(i == 0){
+				i++;
+				chai.expect(object.items[0].status).to.equal(1);
+			}
+			if(i == 2){
+				i++;
+				chai.expect(object.items[0].status).to.equal(2);
+			}
+		});
+
 	});
 
 	it('should return false if -label=X is not found', function(){

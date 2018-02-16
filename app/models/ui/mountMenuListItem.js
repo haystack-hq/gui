@@ -11,15 +11,16 @@ class MountMenuListItem {
             throw new ReferenceError('Missing one of required properties.')
         }
         this.label = options.identifier;
+        this.id = options.identifier;
         this.icon = MountMenuListItem.getIconForStatus(options.status);
         this.position = options.position != null ? 'endof=' + options.position : 'endof=mounts';
     }
 
     static getIconForStatus(status) {
         const iconMap = {
-            0: 	'circleRed.png',
-            1: 	'circleGreen.png',
-            2: 	'circleYellow.png'
+            0: 	'circleRed.png',   //mount is broken
+            1: 	'circleGreen.png', //no activity, mounted
+            2: 	'circleYellow.png' //activity is happening
         };
 
         return path.join(imgDirectory, iconMap[status]);
