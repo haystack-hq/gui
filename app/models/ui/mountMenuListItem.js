@@ -6,7 +6,17 @@ class MountMenuListItem {
         this.label = options.identifier;
         this.id = options.identifier;
         this.path = MountMenuListItem.getPathFromCommand(options.cmd);
-        this.status = options.status;
+        this.cssClass = MountMenuListItem.getClassForStatus(options.status);
+    }
+
+    static getClassForStatus(status) {
+        const classMap = {
+            0: 	'mount-error',   //mount is broken
+            1: 	'mount-active', //no activity, mounted
+            2: 	'mount-pending' //activity is happening
+        };
+
+        return classMap[status];
     }
 
     //gets the path from after "unison " but from before " socket"

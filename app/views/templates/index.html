@@ -18,7 +18,7 @@
             <ul class="list-group" id="mount-list">
                 <li class="list-group-item" v-for="mount in mounts">
                     <!-- TODO: MAKE THIS A FUNCTION -->
-                    <div class="img-circle media-object pull-left" v-bind:class="{'mount-active': (mount.status == 1), 'mount-pending': (mount.status == 2)}"></div>
+                    <div class="img-circle media-object pull-left" v-bind:class="mount.cssClass"></div>
                     <div class="media-body">
                         <strong>{{ mount.label }}</strong>
                         <p>{{ mount.path }}</p>
