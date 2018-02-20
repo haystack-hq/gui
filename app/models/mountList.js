@@ -120,9 +120,11 @@ class MountList {
 	//if we do, remove them
 	checkProcessesNeedRemoval(processes, mount){
 		const processIds = processes.map(p => { return p.pid });
-		if(processIds.indexOf(mount.unisonPid) == -1 && this.checkedIds.indexOf(process.pid) == -1){
+		if(processIds.indexOf(mount.unisonPid) == -1){
 			this.removeItem(mount);
-			this.checkedIds.push(process.pid);
+			if(this.checkedIds.indexOf(mount.unisonPid) == -1){
+				this.checkedIds.push(mount.unisonPid);
+			}
 		}
 	}
 

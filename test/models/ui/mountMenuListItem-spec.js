@@ -16,27 +16,15 @@ describe('mountMenuListItem', function() {
 		).to.throw('Missing one of required properties.');
 	});
 
-	it('should return a MountMenuListItem object with position endof=mounts', function(){
-		var testItem = new MountMenuListItem({
-			identifier: 'andrew-warmoth',
-			status: 1
-		});
-		chai.expect(testItem).to.deep.include({
-			label: 'andrew-warmoth',
-			position: 'endof=mounts'
-		});
-	});
-
-	it('should return a MountMenuListItem object with position endof=testing', function(){
+	it('should return a MountMenuListItem object with a file path', function(){
 		var testItem = new MountMenuListItem({
 			identifier: 'andrew-warmoth',
 			status: 1,
-			position: 'testing'
+			cmd: 'xargs -n1 -I{} unison /Users/andrew/dev/clients/warmoth.com socket://54.187.33.50:5000 -ignore Name .git -batch -prefer newer -dontchmod -perms=0 -label=eyJzeW5jIjoid2F0Y2giLCJpZGVudGlmaWVyIjoiYW5kcmV3LXdhcm1vdGgifQ=='
 		});
 		chai.expect(testItem).to.deep.include({
 			label: 'andrew-warmoth',
-			position: 'endof=testing'
+			path: '/Users/andrew/dev/clients/warmoth.com'
 		});
 	});
-
 });

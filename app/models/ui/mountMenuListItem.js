@@ -1,10 +1,3 @@
-const {app} = require('electron');
-const path = require('path');
-const basePath = (typeof app == 'undefined') ? __dirname : app.getAppPath();
-const assetsDirectory = path.join(basePath, 'assets');
-const imgDirectory = path.join(assetsDirectory, 'images');
-
-
 class MountMenuListItem {
     constructor(options){
         if(!options.identifier || options.status == null){
@@ -12,18 +5,13 @@ class MountMenuListItem {
         }
         this.label = options.identifier;
         this.id = options.identifier;
-        this.icon = MountMenuListItem.getIconForStatus(options.status);
-        this.position = options.position != null ? 'endof=' + options.position : 'endof=mounts';
+        this.path = MountMenuListItem.getPathFromCommand(options.cmd);
+        this.status = options.status;
     }
 
-    static getIconForStatus(status) {
-        const iconMap = {
-            0: 	'circleRed.png',   //mount is broken
-            1: 	'circleGreen.png', //no activity, mounted
-            2: 	'circleYellow.png' //activity is happening
-        };
-
-        return path.join(imgDirectory, iconMap[status]);
+    //gets the path from after "unison " but from before " socket"
+    static getPathFromCommand(command){
+        return command.split('unison ').pop().split(' socket:').shift();
     }
 }
 

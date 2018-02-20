@@ -1,0 +1,22 @@
+.list-group-item .img-circle {
+    width: 16px;
+    height: 16px;
+    margin-top: 12px;
+    margin-right: 12px;
+    margin-left: 2px;
+    background: gray;
+}
+.img-circle.mount-error {
+    background: #d0000d;
+}
+
+.img-circle.mount-pending {
+    background: #d0d000;
+}
+
+.img-circle.mount-active {
+    background: #00d000;
+}
+#list-group-item-template {
+    display: none;
+}

@@ -8,6 +8,7 @@ class MountListItemConverter {
 		if(!(mountList instanceof Array)){
 			throw new TypeError('List provided is not an array.')
 		}
+		this.converted = [];
 		this.list = mountList;
 	}
 
@@ -16,17 +17,24 @@ class MountListItemConverter {
 	}
 
 	converter(conversionClass){
+		this.converted = [];
 		if (typeof conversionClass !== 'function'){
 			throw new TypeError('Conversion class is invalid.')
 		}
-		let converted = [];
+
+		//remove heartbeat duplicates
+		this.list = this.list.filter((thing, index, self) =>
+			self.findIndex(t =>
+				t.identifier === thing.identifier && t.status === thing.status
+			) === index
+		);
 
 		this.list.forEach(mount => {
 			let menuListItem = new conversionClass(mount);
-			converted.push(menuListItem);
+			this.converted.push(menuListItem);
 		});
 
-		return converted;
+		return this.converted;
 	}
 }
 module.exports = MountListItemConverter;
