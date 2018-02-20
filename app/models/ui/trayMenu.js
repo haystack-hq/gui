@@ -19,15 +19,15 @@ class TrayMenu {
 		this.imgDirectory = path.join(this.basePath, 'assets/images');
 
 		this.createMenu();
-		this.animateIcon();
-
-		setTimeout(() => { this.resetIcon() }, 5000);
 
 		//add new event listener: listens to status changes of individual mounts
 		//finds corresponding menu item and updates it
 		this.eventEmitter.on(this.subscribeToChange, (result) => {
 			let converter = new MountListItemConverter(result.items);
 			this.menuItems = converter.to_menu_items();
+
+			this.updateIcon();
+
 			this.menu.webContents.send(this.subscribeToChange, this.menuItems);
 		});
 	}
@@ -64,9 +64,14 @@ class TrayMenu {
 
 		// Center window horizontally below the tray icon
 		const x = Math.round(trayBounds.x + (trayBounds.width / 2) - (windowBounds.width / 2));
+		let y = 0;
 
 		// Position window 4 pixels vertically below the tray icon
-		const y = Math.round(trayBounds.y + trayBounds.height + 4);
+		if(process.platform == 'win32'){
+			y = Math.round(trayBounds.y - trayBounds.height - 315);
+		} else {
+			y = Math.round(trayBounds.y + trayBounds.height + 4);
+		}
 
 		return {x: x, y: y}
 	}
@@ -104,6 +109,19 @@ class TrayMenu {
 		let self = this;
 		clearInterval(this.icon);
 		self.tray.setImage(path.join(self.imgDirectory, `logoTemplate.png`));
+	}
+
+	updateIcon() {
+		let self = this;
+		let pendingItems = this.menuItems.filter(item => {
+			return item.cssClass == 'mount-pending';
+		});
+
+		if(pendingItems.length > 0){
+			self.animateIcon();
+		} else {
+			self.resetIcon();
+		}
 	}
 }
 
