@@ -1,12 +1,12 @@
-class MountMenuListItem {
+class TrayMenuListItem {
     constructor(options){
         if(!options.identifier || options.status == null){
             throw new ReferenceError('Missing one of required properties.')
         }
         this.label = options.identifier;
         this.id = options.identifier;
-        this.path = MountMenuListItem.getPathFromCommand(options.cmd);
-        this.cssClass = MountMenuListItem.getClassForStatus(options.status);
+        this.path = TrayMenuListItem.getPathFromCommand(options.cmd);
+        this.cssClass = TrayMenuListItem.getClassForStatus(options.status);
     }
 
     static getClassForStatus(status) {
@@ -25,4 +25,4 @@ class MountMenuListItem {
     }
 }
 
-module.exports = MountMenuListItem;
+module.exports = TrayMenuListItem;

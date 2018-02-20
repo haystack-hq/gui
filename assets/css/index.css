@@ -1,3 +1,6 @@
+.list-group-item.empty {
+    text-align: center;
+}
 .list-group-item .img-circle {
     width: 16px;
     height: 16px;

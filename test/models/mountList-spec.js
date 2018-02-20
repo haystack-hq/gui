@@ -34,19 +34,22 @@ describe('mountList', function() {
 		let testMount = new Mount({
 			identifier: 'test1',
 			cmd: 'test process should be removed',
-			unisonPid: 9999999
+			unisonPid: 9999999,
+			status: 1
 		});
 
 		let testMount2 = new Mount({
 			identifier: 'test2',
 			cmd: 'unison test should not be removed',
-			unisonPid: 254
+			unisonPid: 254,
+			status: 1
 		});
 
 		let testMount3 = new Mount({
 			identifier: 'test3',
 			cmd: 'test process should be removed',
-			unisonPid: 99993999
+			unisonPid: 99993999,
+			status: 1
 		});
 
 		let processWatcher = new ProcessWatcher({processMonitor: MockPsList});

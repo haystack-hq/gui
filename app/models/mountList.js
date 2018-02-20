@@ -37,7 +37,8 @@ class MountList {
 					let mountOptions = {
 						identifier: decoded.identifier,
 						cmd: process.cmd,
-						unisonPid: process.pid
+						unisonPid: process.pid,
+						status: (decoded.sync == 'initial' ? 2 : 1) //if initial, add as pending
 					};
 
 					let mount = new Mount(mountOptions);

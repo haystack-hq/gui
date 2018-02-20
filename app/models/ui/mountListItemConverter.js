@@ -1,4 +1,4 @@
-const MountMenuListItem = require('./mountMenuListItem');
+const TrayMenuListItem = require('./trayMenuListItem');
 
 class MountListItemConverter {
 	constructor(mountList) {
@@ -13,7 +13,7 @@ class MountListItemConverter {
 	}
 
 	to_menu_items(){
-		return this.converter(MountMenuListItem);
+		return this.converter(TrayMenuListItem);
 	}
 
 	converter(conversionClass){

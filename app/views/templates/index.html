@@ -17,11 +17,15 @@
         <div class="pane">
             <ul class="list-group" id="mount-list">
                 <li class="list-group-item" v-for="mount in mounts">
-                    <!-- TODO: MAKE THIS A FUNCTION -->
                     <div class="img-circle media-object pull-left" v-bind:class="mount.cssClass"></div>
                     <div class="media-body">
                         <strong>{{ mount.label }}</strong>
                         <p>{{ mount.path }}</p>
+                    </div>
+                </li>
+                <li class="list-group-item empty" v-if="!mounts.length">
+                    <div class="media-body">
+                        <p>No active mounts</p>
                     </div>
                 </li>
             </ul>
@@ -30,8 +34,8 @@
     <footer class="toolbar toolbar-footer">
         <div class="toolbar-actions pull-right">
             <div class="btn-group">
-                <button class="btn btn-default js-quit-action">
-                    <span class="icon icon-cancel js-quit-action" onclick="window.close()" title="Quit"></span>
+                <button class="btn btn-default">
+                    <span class="icon icon-cancel" onclick="window.close()" title="Quit"></span>
                 </button>
             </div>
         </div>
@@ -41,5 +45,7 @@
 </html>
 <script charset="utf-8">
     let IndexView = require('../js/index');
-    let index = new IndexView;
+    let index = new IndexView({
+        mountListSelector: '#mount-list'
+    });
 </script>
