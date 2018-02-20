@@ -1,5 +1,7 @@
-const {Menu, BrowserWindow} = require('electron');
+const {app, Menu, BrowserWindow} = require('electron');
 const MountListItemConverter = require('./mountListItemConverter');
+
+const path = require('path');
 
 class TrayMenu {
 	constructor(options){
@@ -7,11 +9,19 @@ class TrayMenu {
 		this.subscribeToChange = options.subscribeToChange;
 		this.subscribeToStatusChange = options.subscribeToStatusChange;
 		this.tray = options.tray;
+		this.basePath = options.basePath;
 		this.menu = null;
 		this.menuHtml = options.menuHtml;
 		this.menuItems = null;
+		this.icon = null;
+
+		this.templateDirectory = path.join(this.basePath, 'app/views/templates');
+		this.imgDirectory = path.join(this.basePath, 'assets/images');
 
 		this.createMenu();
+		this.animateIcon();
+
+		setTimeout(() => { this.resetIcon() }, 5000);
 
 		//add new event listener: listens to status changes of individual mounts
 		//finds corresponding menu item and updates it
@@ -37,7 +47,7 @@ class TrayMenu {
 				backgroundThrottling: false
 			}
 		});
-		this.menu.loadURL(this.menuHtml);
+		this.menu.loadURL(`file://${path.join(this.templateDirectory, 'index.html')}`);
 
 		this.tray.on('right-click', () => {  this.toggleMenu() });
 		this.tray.on('double-click', () => { this.toggleMenu() });
@@ -74,6 +84,26 @@ class TrayMenu {
 		} else {
 			this.showMenu();
 		}
+	}
+
+	animateIcon() {
+		let self = this;
+		let direction = 1;
+		let i = 1;
+
+		const count = () => {
+			i += direction;
+			direction *= (((i % 3) == 0) ? -1 : 1);
+			self.tray.setImage(path.join(self.imgDirectory, `anim${i}Template.png`));
+		};
+
+		this.icon = setInterval(count, 100);
+	}
+
+	resetIcon() {
+		let self = this;
+		clearInterval(this.icon);
+		self.tray.setImage(path.join(self.imgDirectory, `logoTemplate.png`));
 	}
 }
 

@@ -4,7 +4,6 @@ const EventEmitter = require('events');
 const path = require('path');
 const assetsDirectory = path.join(__dirname, 'assets');
 const imgDirectory = path.join(assetsDirectory, 'images');
-const templateDirectory = path.join(__dirname, 'app/views/templates');
 
 const appEvents = new EventEmitter();
 
@@ -23,7 +22,7 @@ app.on('ready', () => {
 		tray: tray,
 		eventEmitter: appEvents,
 		subscribeToChange: 'mount-list-change',
-		menuHtml: `file://${path.join(templateDirectory, 'index.html')}`
+		basePath: __dirname
 	});
 
 	ipcMain.on('dom-ready', () => {
