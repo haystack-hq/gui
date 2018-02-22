@@ -7,11 +7,9 @@ class TrayMenu {
 	constructor(options){
 		this.eventEmitter = options.eventEmitter;
 		this.subscribeToChange = options.subscribeToChange;
-		this.subscribeToStatusChange = options.subscribeToStatusChange;
 		this.tray = options.tray;
 		this.basePath = options.basePath;
 		this.menu = null;
-		this.menuHtml = options.menuHtml;
 		this.menuItems = null;
 		this.icon = null;
 
@@ -66,10 +64,11 @@ class TrayMenu {
 		const x = Math.round(trayBounds.x + (trayBounds.width / 2) - (windowBounds.width / 2));
 		let y = 0;
 
-		// Position window 4 pixels vertically below the tray icon
 		if(process.platform == 'win32'){
+			// Windows: position window directly above the tray icon
 			y = Math.round(trayBounds.y - trayBounds.height - 315);
 		} else {
+			// OSX: position window 4 pixels vertically below the tray icon
 			y = Math.round(trayBounds.y + trayBounds.height + 4);
 		}
 
@@ -95,14 +94,20 @@ class TrayMenu {
 		let self = this;
 		let direction = 1;
 		let i = 1;
+		let delay = 50;
 
 		const count = () => {
-			i += direction;
-			direction *= (((i % 3) == 0) ? -1 : 1);
-			self.tray.setImage(path.join(self.imgDirectory, `anim${i}Template.png`));
+			if(i < 32) { delay = 50 }
+			if(i >= 32) { i = 1 }
+			if(i == 32) { delay = 500 }
+			i += 1;
+			//i += direction;
+			//direction *= (((i % 25) == 0) ? -1 : 1);
+			//self.tray.setTitle(i.toString());
+			self.tray.setImage(path.join(self.imgDirectory, `spin/anim${i}Template.png`));
 		};
 
-		this.icon = setInterval(count, 100);
+		this.icon = setInterval(count, delay);
 	}
 
 	resetIcon() {

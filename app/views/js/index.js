@@ -1,4 +1,5 @@
 const {ipcRenderer} = require('electron');
+const CommandRunner = require('../../helpers/commandRunner');
 
 class IndexView {
     constructor(options) {
@@ -14,6 +15,9 @@ class IndexView {
             el: this.mountListSelector,
             data: {
                 mounts: self.data
+            },
+            methods: {
+                unmount: (identifier) => {self.unmount(identifier)}
             }
         });
 
@@ -26,6 +30,13 @@ class IndexView {
         //once the DOM is ready, we fire off the main event to monitor mounts
         document.addEventListener('DOMContentLoaded', function () {
             ipcRenderer.send('dom-ready');
+        });
+    }
+
+    unmount(identifier){
+        let cmd = new CommandRunner(`con unmount -i ${identifier}`);
+        cmd.get_output(function(err, out, stderr){
+            console.log('done');
         });
     }
 }

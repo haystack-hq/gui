@@ -17,11 +17,17 @@
         <div class="pane">
             <ul class="list-group" id="mount-list">
                 <li class="list-group-item" v-for="mount in mounts">
-                    <div class="img-circle media-object pull-left" v-bind:class="mount.cssClass"></div>
+                    <div class="img-circle media-object pull-left" v-bind:class="mount.status"></div>
                     <div class="media-body">
                         <strong>{{ mount.label }}</strong>
                         <p>{{ mount.path }}</p>
                     </div>
+                    <button class="btn btn-default btn-mini remove-btn"
+                            v-on:click="unmount(mount.id)"
+                            :disabled="mount.status != 'mount-active'"
+                            >
+                        <span class="icon icon-cancel"></span>
+                    </button>
                 </li>
                 <li class="list-group-item empty" v-if="!mounts.length">
                     <div class="media-body">

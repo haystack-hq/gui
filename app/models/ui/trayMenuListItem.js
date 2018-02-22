@@ -6,17 +6,17 @@ class TrayMenuListItem {
         this.label = options.identifier;
         this.id = options.identifier;
         this.path = TrayMenuListItem.getPathFromCommand(options.cmd);
-        this.cssClass = TrayMenuListItem.getClassForStatus(options.status);
+        this.status = TrayMenuListItem.getStatusString(options.status);
     }
 
-    static getClassForStatus(status) {
-        const classMap = {
+    static getStatusString(status) {
+        const statusMap = {
             0: 	'mount-error',   //mount is broken
             1: 	'mount-active', //no activity, mounted
             2: 	'mount-pending' //activity is happening
         };
 
-        return classMap[status];
+        return statusMap[status];
     }
 
     //gets the path from after "unison " but from before " socket"
