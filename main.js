@@ -8,12 +8,12 @@ const imgDirectory = path.join(assetsDirectory, 'images');
 const appEvents = new EventEmitter();
 
 const MountList = require('./app/models/mountList');
-const StackListLocal = require('./app/models/stackListLocal');
+const StackListLocal = require('./app/models/stackList/local');
 const TrayMenu = require('./app/models/ui/trayMenu');
 const ProcessWatcher = require('./app/models/processWatcherService');
 
 // Hide from dock
-//app.dock.hide();
+app.dock.hide();
 
 // Create the tray icon and initialize the menu
 app.on('ready', () => {

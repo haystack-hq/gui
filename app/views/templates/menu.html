@@ -2,9 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script>console.log('wtf?')</script>
     <link rel="stylesheet" href="../../../assets/css/semantic.min.css" media="screen" charset="utf-8">
     <link rel="stylesheet" href="../../../assets/css/index.css" media="screen" charset="utf-8">
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="../../../assets/lib/semantic.min.js"></script>
+
 </head>
 <body>
 <div class="scroll-area">
@@ -26,7 +30,7 @@
 <footer class="list-footer">
     <div class="toolbar-actions pull-right">
         <div class="ui icon right floated buttons">
-            <button class="mini compact ui grey button" onclick="window.location.reload()">
+            <button class="mini compact ui grey button" onclick="window.location.reload()" data-content="butt stuff">
                 <i class="redo icon"></i>
             </button>
             <button class="mini compact ui grey button" onclick="MenuView.exit()">

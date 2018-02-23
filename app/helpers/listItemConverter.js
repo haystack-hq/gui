@@ -1,5 +1,5 @@
-const MountMenuListItem = require('./mountMenuListItem');
-const StackMenuListItem = require('./stackMenuListItem');
+const MountMenuListItem = require('../models/ui/mountMenuListItem');
+const StackMenuListItem = require('../models/ui/stackMenuListItem');
 
 class ListItemConverter {
 	constructor(mountList) {

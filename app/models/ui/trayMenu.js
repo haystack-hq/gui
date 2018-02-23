@@ -1,5 +1,5 @@
 const {app, Menu, ipcMain} = require('electron');
-const ListItemConverter = require('./listItemConverter');
+const ListItemConverter = require('../../helpers/listItemConverter');
 const MenuController = require('../../controllers/menu');
 const StackController = require('../../controllers/stack');
 const StatusConverter = require('../../helpers/statusConverter');
@@ -45,6 +45,7 @@ class TrayMenu {
 			this.menu.window.webContents.send(this.localStackChangeEvent, this.stackItems);
 		});
 
+		//use the event emitter that is tied to the renderer processes
 		ipcMain.on('stack-open', (event, data) => {
 			let stackController = new StackController({
 				stack: data,
@@ -63,10 +64,7 @@ class TrayMenu {
 
 		//hide the window when we click out of it, like an actual menu
 		//this.menu.on('blur', this.menu.hide);
-		this.menu.window.openDevTools({mode: 'detach'});
-	}
-
-	openStack(stack) {
+		//this.menu.window.openDevTools({mode: 'detach'});
 	}
 
 	animateIcon() {

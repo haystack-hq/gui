@@ -1,4 +1,4 @@
-const {BrowserWindow} = require('electron');
+const {app, BrowserWindow} = require('electron');
 const path = require('path');
 
 class StackController {
@@ -24,6 +24,7 @@ class StackController {
         this.window.once('ready-to-show', () => {
             this.window.webContents.send('stack-load', this.stack);
             this.window.show();
+            app.dock.show();
         });
         this.window.focus();
     }

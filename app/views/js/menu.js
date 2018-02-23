@@ -4,7 +4,6 @@ const CommandRunner = require('../../helpers/commandRunner');
 const StackController = require('../../controllers/stack');
 const path = require('path');
 
-
 class MenuView {
     constructor(options) {
         if(typeof options == 'undefined' ||
@@ -15,21 +14,21 @@ class MenuView {
         this.localStacks = [];
         this.mountListSelector = options.mountListSelector;
 
-        this.view = new Vue({
+        this.stackList = new Vue({
             el: this.mountListSelector,
             data: {
                 localStacks: self.localStacks
             },
             methods: {
                 unmount: (identifier) => {self.unmount(identifier)},
-                openStack: (stack) => {self.openStack(stack)}
+                openStack: (stack) => {MenuView.openStack(stack)}
             }
         });
 
         //listen for changes from the main process
         ipcRenderer.on('local-stack-list-change' , function(event, data){
             self.localStacks = data;
-            self.view.localStacks = self.localStacks;
+            self.stackList.localStacks = self.localStacks;
         });
 
         //once the DOM is ready, we fire off the main event to monitor mounts
@@ -45,13 +44,8 @@ class MenuView {
         });
     }
 
-    openStack(stack){
+    static openStack(stack){
         ipcRenderer.send('stack-open', stack);
-        //let stackController = new StackController({
-        //    stack: stack,
-        //    templateDirectory: path.join(__dirname, '../templates')
-        //});
-        //stackController.show();
     }
 
     static exit(){

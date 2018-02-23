@@ -1,6 +1,6 @@
 var chai = require('chai');
 
-var ListItemConverter = require('../../../app/models/ui/listItemConverter');
+var ListItemConverter = require('../../../app/helpers/listItemConverter');
 const Mount = require('../../../app/models/mount');
 
 var assert = chai.assert;
