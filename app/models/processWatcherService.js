@@ -7,7 +7,7 @@ class ProcessWatcherService {
             throw new ReferenceError('Missing one of required properties.')
         }
         this.changeCallback = null;
-		this.interval = 0;
+		this.interval = 1000;
 		this.processMonitor = options.processMonitor;
         this.polling = true;
     }

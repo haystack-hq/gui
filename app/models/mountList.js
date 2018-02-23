@@ -1,5 +1,5 @@
 const Mount = require('./mount');
-const MountListItemConverter = require('./ui/mountListItemConverter');
+const ListItemConverter = require('./ui/listItemConverter');
 
 class MountList {
 	constructor(options){

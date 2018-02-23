@@ -1,16 +1,21 @@
-const {app, Menu, BrowserWindow} = require('electron');
-const MountListItemConverter = require('./mountListItemConverter');
+const {app, Menu, ipcMain} = require('electron');
+const ListItemConverter = require('./listItemConverter');
+const MenuController = require('../../controllers/menu');
+const StackController = require('../../controllers/stack');
+const StatusConverter = require('../../helpers/statusConverter');
 
 const path = require('path');
 
 class TrayMenu {
 	constructor(options){
 		this.eventEmitter = options.eventEmitter;
-		this.subscribeToChange = options.subscribeToChange;
+		this.mountChangeEvent = options.mountChangeEvent;
+		this.localStackChangeEvent = options.localStackChangeEvent;
 		this.tray = options.tray;
 		this.basePath = options.basePath;
 		this.menu = null;
-		this.menuItems = null;
+		this.stackItems = [];
+		this.mountItems = [];
 		this.icon = null;
 
 		this.templateDirectory = path.join(this.basePath, 'app/views/templates');
@@ -20,113 +25,95 @@ class TrayMenu {
 
 		//add new event listener: listens to status changes of individual mounts
 		//finds corresponding menu item and updates it
-		this.eventEmitter.on(this.subscribeToChange, (result) => {
-			let converter = new MountListItemConverter(result.items);
-			this.menuItems = converter.to_menu_items();
+		this.eventEmitter.on(this.mountChangeEvent, (result) => {
+			let converter = new ListItemConverter(result.items);
+			this.mountItems = converter.mounts_to_menu_items();
 
 			this.updateIcon();
 
-			this.menu.webContents.send(this.subscribeToChange, this.menuItems);
+			this.eventEmitter.emit(this.localStackChangeEvent, this.stackItems);
+		});
+
+		this.eventEmitter.on(this.localStackChangeEvent, (result) => {
+			if(result.items){
+				let converter = new ListItemConverter(result.items);
+				this.stackItems = converter.stacks_to_menu_items();
+			}
+
+			this.updateStacks();
+
+			this.menu.window.webContents.send(this.localStackChangeEvent, this.stackItems);
+		});
+
+		ipcMain.on('stack-open', (event, data) => {
+			let stackController = new StackController({
+				stack: data,
+				templateDirectory: this.templateDirectory
+			});
+			stackController.show();
+			stackController.window.webContents.send('stack-load', data)
 		});
 	}
 
 	createMenu() {
-		this.menu = new BrowserWindow({
-			width: 300,
-			height: 350,
-			show: false,
-			frame: false,
-			fullscreenable: false,
-			resizable: false,
-			transparent: true,
-			webPreferences: {
-				// Prevents renderer process code from not running when window is
-				// hidden
-				backgroundThrottling: false
-			}
+		this.menu = new MenuController({
+			templateDirectory: this.templateDirectory,
+			tray: this.tray
 		});
-		this.menu.loadURL(`file://${path.join(this.templateDirectory, 'index.html')}`);
-
-		this.tray.on('right-click', () => {  this.toggleMenu() });
-		this.tray.on('double-click', () => { this.toggleMenu() });
-		this.tray.on('click', () => { this.toggleMenu() });
 
 		//hide the window when we click out of it, like an actual menu
 		//this.menu.on('blur', this.menu.hide);
-		this.menu.openDevTools({mode: 'detach'});
+		this.menu.window.openDevTools({mode: 'detach'});
 	}
 
-	getMenuPosition() {
-		const windowBounds = this.menu.getBounds();
-		const trayBounds = this.tray.getBounds();
-
-		// Center window horizontally below the tray icon
-		const x = Math.round(trayBounds.x + (trayBounds.width / 2) - (windowBounds.width / 2));
-		let y = 0;
-
-		if(process.platform == 'win32'){
-			// Windows: position window directly above the tray icon
-			y = Math.round(trayBounds.y - trayBounds.height - 315);
-		} else {
-			// OSX: position window 4 pixels vertically below the tray icon
-			y = Math.round(trayBounds.y + trayBounds.height + 4);
-		}
-
-		return {x: x, y: y}
-	}
-
-	showMenu() {
-		const position = this.getMenuPosition();
-		this.menu.setPosition(position.x, position.y, false);
-		this.menu.show();
-		this.menu.focus();
-	}
-
-	toggleMenu() {
-		if(this.menu.isVisible()){
-			this.menu.hide();
-		} else {
-			this.showMenu();
-		}
+	openStack(stack) {
 	}
 
 	animateIcon() {
 		let self = this;
-		let direction = 1;
 		let i = 1;
-		let delay = 50;
 
 		const count = () => {
-			if(i < 32) { delay = 50 }
-			if(i >= 32) { i = 1 }
-			if(i == 32) { delay = 500 }
+			if(i >= 15) { i = 1 }
+			self.tray.setImage(path.join(self.imgDirectory, `slide/anim${i}Template.png`));
 			i += 1;
-			//i += direction;
-			//direction *= (((i % 25) == 0) ? -1 : 1);
-			//self.tray.setTitle(i.toString());
-			self.tray.setImage(path.join(self.imgDirectory, `spin/anim${i}Template.png`));
 		};
 
-		this.icon = setInterval(count, delay);
+		this.icon = setInterval(count, 50);
 	}
 
 	resetIcon() {
-		let self = this;
 		clearInterval(this.icon);
-		self.tray.setImage(path.join(self.imgDirectory, `logoTemplate.png`));
+		this.tray.setImage(path.join(this.imgDirectory, `logoTemplate.png`));
 	}
 
 	updateIcon() {
-		let self = this;
-		let pendingItems = this.menuItems.filter(item => {
-			return item.cssClass == 'mount-pending';
+		let pendingItems = this.mountItems.filter(item => {
+			return item.status == 'mount-pending';
 		});
 
 		if(pendingItems.length > 0){
-			self.animateIcon();
+			this.animateIcon();
 		} else {
-			self.resetIcon();
+			this.resetIcon();
 		}
+	}
+
+	updateStacks() {
+		let mountedStacks = [];
+		this.stackItems.forEach((stack, index) => {
+			this.mountItems.forEach(mount => {
+				if(stack.id == mount.id){
+					if(mountedStacks.indexOf(stack.id) == -1){
+						mountedStacks.push(stack.id);
+					}
+					this.stackItems[index].status = mount.status;
+				}
+			});
+			if(mountedStacks.indexOf(stack.id) == -1){
+				this.stackItems[index].status = StatusConverter.getStatusString(3);
+			}
+		});
 	}
 }
 

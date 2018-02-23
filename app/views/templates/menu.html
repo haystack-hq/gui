@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../../assets/css/semantic.min.css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="../../../assets/css/index.css" media="screen" charset="utf-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+<div class="scroll-area">
+    <div class="ui list" id="mount-list">
+        <div class="item" v-for="stack in localStacks">
+            <div class="ui icon circle" v-bind:class="stack.status">
+                <span></span>
+            </div>
+            <div class="content">
+                <a class="header">{{ stack.label }}</a>
+                <button class="mini compact ui button more-btn" v-on:click="openStack(stack)" >
+                    ...
+                </button>
+                <!--<div class="description">Last seen watching <a><b>Bob's Burgers</b></a> 10 hours ago.</div>-->
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="list-footer">
+    <div class="toolbar-actions pull-right">
+        <div class="ui icon right floated buttons">
+            <button class="mini compact ui grey button" onclick="window.location.reload()">
+                <i class="redo icon"></i>
+            </button>
+            <button class="mini compact ui grey button" onclick="MenuView.exit()">
+                <i class="power off icon"></i>
+            </button>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
+<script charset="utf-8">
+    let MenuView = require('../js/menu');
+    let menu = new MenuView({
+        mountListSelector: '#mount-list'
+    });
+</script>

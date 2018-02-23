@@ -1,6 +1,6 @@
 var chai = require('chai');
 
-var MountListItemConverter = require('../../../app/models/ui/mountListItemConverter');
+var ListItemConverter = require('../../../app/models/ui/listItemConverter');
 const Mount = require('../../../app/models/mount');
 
 var assert = chai.assert;
@@ -13,28 +13,28 @@ let testMount = new Mount({
 	status: 1
 });
 
-describe('mountListItemConverter', function() {
+describe('listItemConverter', function() {
 	it('should throw exception from missing list', function(){
 		chai.expect(() =>
-			new MountListItemConverter()
+			new ListItemConverter()
 		).to.throw('Missing list of mounts.');
 	});
 
 	it('should throw exception from not providing an Array', function(){
 		chai.expect(() =>
-				new MountListItemConverter({is: 'object'})
+				new ListItemConverter({is: 'object'})
 		).to.throw('List provided is not an array.');
 	});
 
 	it('should return an array with a MountListItem in it', function(){
-		let itemList = new MountListItemConverter([testMount]).to_menu_items();
+		let itemList = new ListItemConverter([testMount]).mounts_to_menu_items();
 
 		chai.expect(itemList).to.nested.property('[0].label', 'test-mount');
 	});
 
 	it('should throw exception from an invalid converter class', function(){
 		chai.expect(() =>
-			new MountListItemConverter([testMount]).converter('test')
+			new ListItemConverter([testMount]).converter('test')
 		).to.throw('Conversion class is invalid.');
 	});
 });

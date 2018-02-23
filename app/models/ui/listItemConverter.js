@@ -1,6 +1,7 @@
-const TrayMenuListItem = require('./trayMenuListItem');
+const MountMenuListItem = require('./mountMenuListItem');
+const StackMenuListItem = require('./stackMenuListItem');
 
-class MountListItemConverter {
+class ListItemConverter {
 	constructor(mountList) {
 		if(mountList == null){
 			throw new ReferenceError('Missing list of mounts.')
@@ -12,8 +13,12 @@ class MountListItemConverter {
 		this.list = mountList;
 	}
 
-	to_menu_items(){
-		return this.converter(TrayMenuListItem);
+	mounts_to_menu_items(){
+		return this.converter(MountMenuListItem);
+	}
+
+	stacks_to_menu_items(){
+		return this.converter(StackMenuListItem);
 	}
 
 	converter(conversionClass){
@@ -36,5 +41,18 @@ class MountListItemConverter {
 
 		return this.converted;
 	}
+
+
+	static getStatusString(status) {
+		const statusMap = {
+			0: 'mount-error',   //mount is broken
+			1: 'mount-active', //no activity, mounted
+			2: 'mount-pending', //activity is happening
+			3: 'mount-none'
+		};
+
+		return statusMap[status];
+	}
 }
-module.exports = MountListItemConverter;
+
+module.exports = ListItemConverter;
