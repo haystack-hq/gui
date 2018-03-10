@@ -1,3 +1,6 @@
+#stack-view {
+    background: #f6f6f6;
+}
 .ui.grid.services {
     position: absolute;
     bottom: 0;
@@ -10,20 +13,29 @@
     padding-bottom: 0;
 }
 .ui.tabular.menu.main.tabs {
-    background: #EEE;
     cursor: default;
+    background: white;
 }
-.ui.vertical.tabular.menu .item:not(.details),
-.ui.vertical.tabular.menu .item:not(.details).active {
-    margin-left: 20px;
+.ui.vertical.tabular.menu.main.tabs .item:not(.details),
+.ui.vertical.tabular.menu.main.tabs .item:not(.details).active {
     line-height: 20px;
+}
+
+.ui.vertical.tabular.menu.main.tabs .item:not(.details) {
+    border-top: 1px solid #d4d4d5;
+    background: white;
+}
+.ui.vertical.tabular.menu.main.tabs .item:not(.details):last-child {
+    border-bottom: 1px solid #d4d4d5
+}
+.ui.vertical.tabular.menu.main.tabs .item.active {
+    border-top: 1px solid #d4d4d5;
+    border-bottom: 0;
+    background: #f6f6f6;
 }
 
 .main.tabs .item.details .inner {
     text-align: center;
-    background: white;
-    border: 1px solid #d4d4d5;
-    border-radius: 5px;
     padding: 10px 20px;
 }
 .main.tabs .item.details .inner .stack.controls {
@@ -34,6 +46,9 @@
 }
 .main.tabs .item .status {
     font-size: 12px;
+}
+.service-details {
+    background: #f6f6f6;
 }
 .service-details .inner {
     padding: 15px 0;
