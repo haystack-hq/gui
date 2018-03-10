@@ -8,7 +8,7 @@ class MountMenuListItem {
         this.label = options.identifier;
         this.id = options.identifier;
         this.path = MountMenuListItem.getPathFromCommand(options.cmd);
-        this.status = StatusConverter.getStatusString(options.status);
+        this.status = StatusConverter.getStateFromStatus(options.status);
     }
 
     //gets the path from after "unison " but from before " socket"

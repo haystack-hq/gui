@@ -1,0 +1,37 @@
+/*
+ Prevent text from being selectable
+ */
+body {
+    min-width: inherit;
+}
+:not(input):not(textarea),
+:not(input):not(textarea)::after,
+:not(input):not(textarea)::before {
+    -webkit-user-select: none;
+    user-select: none;
+}
+input, button, textarea, :focus {
+    outline: none;
+}
+h2, h4 {
+    margin: 0;
+}
+.hand {
+    cursor: pointer;
+}
+.full-height {
+    height: 100%;
+}
+.inactive {
+    color: gray;
+}
+.error, .unhealthy {
+    color: #a0000a;
+}
+.pending {
+    color: #a0a000;
+}
+
+.active:not(.tab), .healthy {
+    color: #00a000;
+}

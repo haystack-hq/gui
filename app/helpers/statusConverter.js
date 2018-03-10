@@ -1,10 +1,11 @@
 class StatusConverter{
-    static getStatusString(status) {
+    static getStateFromStatus(status) {
         const statusMap = {
-            0: 'mount-error',   //mount is broken
-            1: 'mount-active', //no activity, mounted
-            2: 'mount-pending', //activity is happening
-            3: 'mount-none'
+            'pending': 'pending',
+            'running': 'active',
+            'starting': 'pending',
+            'terminating': 'pending',
+            'stopped': 'inactive'
         };
 
         return statusMap[status];

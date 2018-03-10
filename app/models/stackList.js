@@ -3,15 +3,14 @@ const jsonFile = require('jsonfile');
 const {app} = require('electron');
 const path = require('path');
 
-class StackListLocal {
+class StackList {
 	constructor(options){
-		let self = this;
 		this.eventEmitter = options.eventEmitter;
 		this.onChangeEvent = options.onChangeEvent;
 		this.stackListFile = options.stackListFile;
 
 		jsonFile.readFile(this.stackListFile, (err, obj) => {
-			this.eventEmitter.emit(this.onChangeEvent, {items: obj.local});
+			this.eventEmitter.emit(this.onChangeEvent, {items: obj.stacks});
 		});
 
 		const listMonitor = new JsonWatch(this.stackListFile);
@@ -22,4 +21,4 @@ class StackListLocal {
 	}
 }
 
-module.exports = StackListLocal;
+module.exports = StackList;

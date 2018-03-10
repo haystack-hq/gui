@@ -8,7 +8,7 @@ const imgDirectory = path.join(assetsDirectory, 'images');
 const appEvents = new EventEmitter();
 
 const MountList = require('./app/models/mountList');
-const StackListLocal = require('./app/models/stackList/local');
+const StackList = require('./app/models/stackList');
 const TrayMenu = require('./app/models/ui/trayMenu');
 const ProcessWatcher = require('./app/models/processWatcherService');
 
@@ -21,16 +21,16 @@ app.on('ready', () => {
 
 	let menu = new TrayMenu({
 		tray: tray,
-		eventEmitter: appEvents,
+		eventEmitter: ipcMain,
 		mountChangeEvent: 'mount-list-change',
-		localStackChangeEvent: 'local-stack-list-change',
+		stackChangeEvent: 'stack-list-change',
 		basePath: __dirname
 	});
 
 	ipcMain.on('dom-ready', () => {
-		let stackListLocal = new StackListLocal({
-			onChangeEvent: 'local-stack-list-change',
-			eventEmitter: appEvents,
+		let stackList = new StackList({
+			onChangeEvent: 'stack-list-change',
+			eventEmitter: ipcMain,
 			stackListFile: path.join(__dirname, 'stackdata.json')
 		});
 
@@ -41,7 +41,8 @@ app.on('ready', () => {
 		let mountList = new MountList({
 			processWatcher: processWatcher,
 			onChangeEvent: 'mount-list-change',
-			eventEmitter: appEvents
+			eventEmitter: ipcMain
 		});
 	});
+	app.setName('Haystack Toolbar');
 });

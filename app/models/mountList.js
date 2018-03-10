@@ -9,22 +9,21 @@ class MountList {
 		this.processWatcher = options.processWatcher;
 		this.eventEmitter = options.eventEmitter;
 		this.onChangeEvent = options.onChangeEvent;
-		let self = this;
 
-		this.processWatcher.onChange(function(processes){
+		this.processWatcher.onChange(processes => {
 			//check all watched processes and see if any file transfers have wrapped up
 			//if the sync process is gone, then we update the original process to a 'good' status
-			self.checkWatchedProcesses(processes);
+			this.checkWatchedProcesses(processes);
 
 			// loop all mounts, check PIDs
-			self.mounts.forEach(mount => {
-				self.checkProcessesExist(processes, mount);
-				self.checkProcessesNeedRemoval(processes, mount);
+			this.mounts.forEach(mount => {
+				this.checkProcessesExist(processes, mount);
+				this.checkProcessesNeedRemoval(processes, mount);
 			});
 
 			//filter all of the checked IDs so we are only left with new processes
 			let newProcesses = processes.filter(process => {
-				return self.checkedIds.indexOf(process.pid) == -1
+				return this.checkedIds.indexOf(process.pid) == -1
 			});
 
 			//iterate over them
@@ -42,26 +41,26 @@ class MountList {
 					};
 
 					let mount = new Mount(mountOptions);
-					self.addItem(mount);
+					this.addItem(mount);
 				}
 				//otherwise, if the process is new but it is a watch command
 				//then we update the watched processes list
 				if(decoded.sync == 'watch' && process.cmd.indexOf('xargs -n1 -I{}') == -1) {
-					let existingMount = self.mounts.filter(function(existingItem) {
+					let existingMount = this.mounts.filter(existingItem => {
 						return existingItem.identifier == decoded.identifier;
 					})[0];
 
-					let mountIndex = self.mounts.indexOf(existingMount);
+					let mountIndex = this.mounts.indexOf(existingMount);
 
 					if(mountIndex > -1){
-						if(typeof existingMount != 'undefined' && self.mounts[mountIndex].status != 2){
-							if(self.watched.indexOf(decoded.identifier) == -1){
-								self.watched.push({
+						if(typeof existingMount != 'undefined' && this.mounts[mountIndex].status != 2){
+							if(this.watched.indexOf(decoded.identifier) == -1){
+								this.watched.push({
 									identifier: decoded.identifier,
 									pid: process.pid
 								});
 							}
-							self.updateItemByIdentifier(decoded.identifier, 2);
+							this.updateItemByIdentifier(decoded.identifier, 2);
 						}
 					}
 				}
@@ -80,7 +79,7 @@ class MountList {
 
 	//removes the Mount from the list of Mounts
 	removeItem(mount){
-		this.mounts = this.mounts.filter(function(existingItem) {
+		this.mounts = this.mounts.filter(existingItem => {
 			return existingItem.unisonPid !== mount.unisonPid
 		});
 		this.onChange();
@@ -89,7 +88,7 @@ class MountList {
 	//if a new process has been created/destroyed with the same identifier as the watch process
 	//and it is a sync process, then we update the status of the watch process' Mount object
 	updateItemByIdentifier(identifier, status){
-		let itemToUpdate = this.mounts.filter(function(existingItem) {
+		let itemToUpdate = this.mounts.filter(existingItem => {
 			return existingItem.identifier == identifier;
 		})[0];
 
@@ -132,12 +131,11 @@ class MountList {
 	//check to see if any of the processes are no longer being watched
 	//if they aren't, remove it from the watchlist and update the original mount list item
 	checkWatchedProcesses(processes){
-		let self = this;
 		this.watched.forEach(processData => {
 			const processIds = processes.map(p => { return p.pid });
 			if(processIds.indexOf(processData.pid) == -1){
-				self.updateItemByIdentifier(processData.identifier, 1);
-				self.watched = self.watched.filter(function(item) {
+				this.updateItemByIdentifier(processData.identifier, 1);
+				this.watched = this.watched.filter(item => {
 					return item.pid != processData.pid;
 				})
 			}

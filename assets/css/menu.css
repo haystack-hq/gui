@@ -1,0 +1,104 @@
+.ui.attached.tabular.menu.main.tabs {
+    background: #EEE;
+    cursor: default;
+}
+.scroll-area {
+    height: calc(100% - 100px);
+    width: 300px;
+    border-left: 1px solid #CCC;
+    border-right: 1px solid #CCC;
+    overflow-y: auto;
+}
+.stackList.ui.list {
+    position: relative;
+}
+.list-group-item.empty {
+    text-align: center;
+}
+.stackList.ui.list .item {
+    padding: 10px !important;
+    position: relative;
+    cursor: default;
+}
+.stackList.ui.list .item.no-stacks span {
+    position: relative;
+    float: left;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.stackList.ui.list .item.hover:hover {
+    background: #F5F5F5;
+}
+.stackList.ui.list .circle {
+    display: table-cell;
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+}
+.stackList.ui.list .circle > button{
+    display: block;
+    height: 24px;
+    padding: 0;
+    font-size: 24px;
+    color: gray;
+    background: transparent;
+    text-align: center;
+    line-height: 21px;
+    border: 0;
+}
+.stackList.ui.list .circle > button i {
+    margin: 0;
+}
+.stackList.ui.list .item .content {
+    width: 100%;
+    vertical-align: middle !important;
+    cursor: pointer;
+}
+.stackList.ui.list .item .content .header {
+    display: inline;
+}
+.stackList.ui.list .item .content .provider {
+    margin-left: 5px;
+    color: #999;
+}
+.stackList.ui.list .item .content .status {
+    display: block;
+    font-size: 12px;
+}
+#list-group-item-template {
+    display: none;
+}
+.stackList.ui.list button:disabled {
+    opacity: 0.5;
+}
+.stackList.ui.list .more-btn {
+    position: absolute;
+    top: 6px;
+    right: 14px;
+    display: none;
+}
+.stackList.ui.list .item:hover .more-btn {
+    display: block;
+}
+
+.list-footer {
+    position: absolute;
+    bottom: 0;
+    background: #EEEEEE;
+    width: 100%;
+    font-size: 13px;
+    border-width: 0 1px 1px 1px;
+    border-style: solid;
+    border-color: #CCC;
+    cursor: default;
+}
+.trayMenu.ui.list .item {
+    padding: 7px 14px;
+}
+.trayMenu.ui.list .item:not(:first-child) {
+    border-top: 1px solid #CCC;
+}
+.trayMenu.ui.list .item:hover {
+    background: #DDD;
+}

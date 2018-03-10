@@ -2,12 +2,16 @@ const StatusConverter = require('../../helpers/statusConverter');
 
 class StackMenuListItem {
     constructor(options){
-        if(!options.identifier){
+        if(!options.identifier || !options.status){
             throw new ReferenceError('Missing one of required properties.')
         }
-        this.label = options.identifier;
-        this.id = options.identifier;
-        this.status = StatusConverter.getStatusString(3); //no mount by default
+        this.id = options._id;
+        this.identifier = options.identifier;
+        this.provider = options.provider;
+        this.status = options.status;
+        this.health = options.health;
+        this.services = options.services;
+        this.state = StatusConverter.getStateFromStatus(options.status);
     }
 }
 

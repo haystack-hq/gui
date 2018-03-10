@@ -2,40 +2,41 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-    <script>console.log('wtf?')</script>
     <link rel="stylesheet" href="../../../assets/css/semantic.min.css" media="screen" charset="utf-8">
-    <link rel="stylesheet" href="../../../assets/css/index.css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="../../../assets/css/globals.css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="../../../assets/css/menu.css" media="screen" charset="utf-8">
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-    <script src="../../../assets/lib/semantic.min.js"></script>
-
 </head>
 <body>
+<div class="ui top attached tabular menu main tabs" id="tabs">
+    <div class="item" v-for="tab in tabs" @click="selectTab(tab)" :class="{'active': currentTab == tab}">
+        {{tab.title}}
+    </div>
+</div>
 <div class="scroll-area">
-    <div class="ui list" id="mount-list">
-        <div class="item" v-for="stack in localStacks">
-            <div class="ui icon circle" v-bind:class="stack.status">
-                <span></span>
+    <div class="stackList ui list divided full-height" id="stack-list">
+        <div class="item hover hand" v-for="stack in sortedStacks">
+            <div class="ui icon circle">
+                <button><i class="icon" :class="stack.state == 'inactive' ? 'play' : 'stop'" ></i></button>
             </div>
-            <div class="content">
-                <a class="header">{{ stack.label }}</a>
-                <button class="mini compact ui button more-btn" v-on:click="openStack(stack)" >
-                    ...
-                </button>
-                <!--<div class="description">Last seen watching <a><b>Bob's Burgers</b></a> 10 hours ago.</div>-->
+            <div class="content" @click="openStack(stack)">
+                <span class="header">{{ stack.identifier }}</span>
+                <span v-if="stack.provider" class="provider">{{ stack.provider }}</span>
+                <span class="status" :class="stack.state">{{ stack.status }}</span>
             </div>
+        </div>
+        <div class="item no-stacks center full-height" v-if="!sortedStacks.length">
+            <span>No Stacks Found</span>
         </div>
     </div>
 </div>
 <footer class="list-footer">
-    <div class="toolbar-actions pull-right">
-        <div class="ui icon right floated buttons">
-            <button class="mini compact ui grey button" onclick="window.location.reload()" data-content="butt stuff">
-                <i class="redo icon"></i>
-            </button>
-            <button class="mini compact ui grey button" onclick="MenuView.exit()">
-                <i class="power off icon"></i>
-            </button>
+    <div class="trayMenu ui list">
+        <div class="item">
+            <div class="content">About Haystack</div>
+        </div>
+        <div class="item" onclick="MenuView.exit()">
+            <div class="content">Exit</div>
         </div>
     </div>
 </footer>
@@ -44,6 +45,7 @@
 <script charset="utf-8">
     let MenuView = require('../js/menu');
     let menu = new MenuView({
-        mountListSelector: '#mount-list'
+        stackListSelector: '#stack-list',
+        tabSelector: '#tabs'
     });
 </script>

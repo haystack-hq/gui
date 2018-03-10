@@ -28,9 +28,9 @@ class ListItemConverter {
 		}
 
 		//remove heartbeat duplicates
-		this.list = this.list.filter((thing, index, self) =>
+		this.list = this.list.filter((obj, index, self) =>
 			self.findIndex(t =>
-				t.identifier === thing.identifier && t.status === thing.status
+				t.identifier === obj.identifier && t.status === obj.status
 			) === index
 		);
 
@@ -40,18 +40,6 @@ class ListItemConverter {
 		});
 
 		return this.converted;
-	}
-
-
-	static getStatusString(status) {
-		const statusMap = {
-			0: 'mount-error',   //mount is broken
-			1: 'mount-active', //no activity, mounted
-			2: 'mount-pending', //activity is happening
-			3: 'mount-none'
-		};
-
-		return statusMap[status];
 	}
 }
 

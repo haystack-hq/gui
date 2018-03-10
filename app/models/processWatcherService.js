@@ -13,12 +13,11 @@ class ProcessWatcherService {
     }
 
     poll(){
-        const self = this;
         if(this.polling){
             this.processMonitor().then(processes => {
                     let filtered = ProcessWatcherService.filterProcesses(processes);
-                    self.changeCallback(filtered);
-                    setTimeout(function() { self.poll() }, self.interval);
+                    this.changeCallback(filtered);
+                    setTimeout(() => { this.poll() }, this.interval);
                 }
             )
         }

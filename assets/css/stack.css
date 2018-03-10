@@ -1,0 +1,59 @@
+.ui.grid.services {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    margin-top: 0;
+    width: 100%;
+}
+.ui.grid>.column:not(.row) {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.ui.tabular.menu.main.tabs {
+    background: #EEE;
+    cursor: default;
+}
+.ui.vertical.tabular.menu .item:not(.details),
+.ui.vertical.tabular.menu .item:not(.details).active {
+    margin-left: 20px;
+    line-height: 20px;
+}
+
+.main.tabs .item.details .inner {
+    text-align: center;
+    background: white;
+    border: 1px solid #d4d4d5;
+    border-radius: 5px;
+    padding: 10px 20px;
+}
+.main.tabs .item.details .inner .stack.controls {
+    margin: 10px 0;
+}
+.main.tabs .item.details .inner .stack.controls .ui.button.large {
+    font-size: 18px;
+}
+.main.tabs .item .status {
+    font-size: 12px;
+}
+.service-details .inner {
+    padding: 15px 0;
+    height: 100%;
+}
+.service-details .inner .details {
+    min-height: 215px;
+}
+.service-details .service-controls {
+    height: calc(100% - 275px);
+}
+.service-details .service-controls .content {
+    margin-top: 15px;
+    height: calc(100% - 55px);
+}
+.service-details .service-controls .content .terminal {
+    background: black;
+    white-space: pre-line;
+    color: #EEE;
+    height: 100%;
+    padding: 10px;
+    font-family: "Monaco", monospace;
+}

@@ -7,40 +7,21 @@ const path = require('path');
 class MenuView {
     constructor(options) {
         if(typeof options == 'undefined' ||
-            options.mountListSelector == null){
+            options.stackListSelector == null){
             throw new ReferenceError('Missing one of required properties.');
         }
-        let self = this;
-        this.localStacks = [];
-        this.mountListSelector = options.mountListSelector;
+        this.stacks = [];
+        this.tabs = null;
+        this.currentTab = null;
+        this.stackList = null;
+        this.stackListSelector = options.stackListSelector;
+        this.tabSelector = options.tabSelector;
 
-        this.stackList = new Vue({
-            el: this.mountListSelector,
-            data: {
-                localStacks: self.localStacks
-            },
-            methods: {
-                unmount: (identifier) => {self.unmount(identifier)},
-                openStack: (stack) => {MenuView.openStack(stack)}
-            }
-        });
-
-        //listen for changes from the main process
-        ipcRenderer.on('local-stack-list-change' , function(event, data){
-            self.localStacks = data;
-            self.stackList.localStacks = self.localStacks;
-        });
+        this.initStackList();
 
         //once the DOM is ready, we fire off the main event to monitor mounts
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', () => {
             ipcRenderer.send('dom-ready');
-        });
-    }
-
-    unmount(identifier){
-        let cmd = new CommandRunner(`con unmount -i ${identifier}`);
-        cmd.get_output(function(err, out, stderr){
-            console.log('done');
         });
     }
 
@@ -49,7 +30,78 @@ class MenuView {
     }
 
     static exit(){
-        app.quit();
+        let shouldExit = confirm("Are you sure you want to exit? Your stacks will continue to run.");
+        if (shouldExit == true) {
+            app.quit();
+        }
+    }
+
+    initStackList(){
+        this.stackList = new Vue({
+            el: this.stackListSelector,
+            data: {
+                stacks: this.stacks
+            },
+            methods: {
+                openStack: (stack) => {MenuView.openStack(stack)}
+            },
+            computed: {
+                sortedStacks() {
+                    return this.stacks.sort((a, b) => a.identifier > b.identifier )
+                }
+            }
+        });
+
+        //listen for changes from the main process
+        ipcRenderer.on('stack-list-change', (event, data) => {
+            this.stacks = data;
+            this.stackList.stacks = data;
+            if(!this.tabs){
+                this.initTabs();
+            } else if(this.tabs.currentTab) {
+                this.tabs.selectTab(this.tabs.currentTab);
+            }
+            ipcRenderer.send('stacks-updated', this.stacks);
+        });
+    }
+
+    initTabs(){
+        this.tabs = new Vue({
+            el: this.tabSelector,
+            data: {
+                tabs: [
+                    {
+                        title: "My Stacks",
+                        filterStacks: "stacko"
+                    },
+                    {
+                        title: "Team Stacks",
+                        filterStacks: "tedst"
+                    },
+                    {
+                        title: "all",
+                        filterStacks: "s"
+                    }
+                ],
+                currentTab: this.currentTab
+            },
+            methods: {
+                selectTab: (tab) => {
+                    this.selectTab(tab)
+                }
+            }
+        });
+
+        //select the first tab after loading
+        this.tabs.selectTab(this.tabs.tabs[0]);
+    }
+
+    // TODO: THIS SHOULD FILTER BY SOMETHING ELSE
+    selectTab(tab){
+        this.tabs.currentTab = tab;
+        this.stackList.stacks = this.stacks.filter(stack => {
+            return stack.identifier.indexOf(tab.filterStacks) > -1;
+        });
     }
 }
 

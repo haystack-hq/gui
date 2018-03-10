@@ -1,4 +1,4 @@
-const {app, BrowserWindow} = require('electron');
+const {app, BrowserWindow, Menu} = require('electron');
 const path = require('path');
 
 class StackController {
@@ -14,10 +14,28 @@ class StackController {
         this.window = new BrowserWindow({
             show: false,
             fullscreenable: false,
-            resizable: false
+            resizable: true,
+            height: 900,
+            width: 1200,
+            minHeight: 700,
+            minWidth: 1000
         });
         this.window.loadURL(`file://${path.join(this.templateDirectory, 'stack.html')}`);
         this.window.openDevTools({mode: 'detach'});
+
+        this.window.on('close', () => {
+            this.window = null;
+        });
+
+        //this will prevent users from reloading the window with keyboard shortcuts
+        //let template = [
+        //    { label: app.getName(), submenu: [
+        //        { label: 'Quit', role: "quit" }
+        //    ] }
+        //];
+        //
+        //const menu = Menu.buildFromTemplate(template);
+        //Menu.setApplicationMenu(menu);
     }
 
     show() {

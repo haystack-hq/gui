@@ -10,7 +10,7 @@ class TrayMenu {
 	constructor(options){
 		this.eventEmitter = options.eventEmitter;
 		this.mountChangeEvent = options.mountChangeEvent;
-		this.localStackChangeEvent = options.localStackChangeEvent;
+		this.stackChangeEvent = options.stackChangeEvent;
 		this.tray = options.tray;
 		this.basePath = options.basePath;
 		this.menu = null;
@@ -31,18 +31,18 @@ class TrayMenu {
 
 			this.updateIcon();
 
-			this.eventEmitter.emit(this.localStackChangeEvent, this.stackItems);
+			this.eventEmitter.emit(this.stackChangeEvent, this.stackItems);
 		});
 
-		this.eventEmitter.on(this.localStackChangeEvent, (result) => {
+		this.eventEmitter.on(this.stackChangeEvent, (result) => {
 			if(result.items){
 				let converter = new ListItemConverter(result.items);
 				this.stackItems = converter.stacks_to_menu_items();
 			}
 
-			this.updateStacks();
+			//this.updateStacks();
 
-			this.menu.window.webContents.send(this.localStackChangeEvent, this.stackItems);
+			this.menu.window.webContents.send(this.stackChangeEvent, this.stackItems);
 		});
 
 		//use the event emitter that is tied to the renderer processes
@@ -52,7 +52,12 @@ class TrayMenu {
 				templateDirectory: this.templateDirectory
 			});
 			stackController.show();
-			stackController.window.webContents.send('stack-load', data)
+			stackController.window.webContents.send('stack-load', data);
+			ipcMain.on(this.stackChangeEvent, (event, data) => {
+				if(stackController.window){
+					stackController.window.webContents.send('stacks-updated', this.stackItems);
+				}
+			})
 		});
 	}
 
@@ -68,12 +73,11 @@ class TrayMenu {
 	}
 
 	animateIcon() {
-		let self = this;
 		let i = 1;
 
 		const count = () => {
 			if(i >= 15) { i = 1 }
-			self.tray.setImage(path.join(self.imgDirectory, `slide/anim${i}Template.png`));
+			this.tray.setImage(path.join(this.imgDirectory, `slide/anim${i}Template.png`));
 			i += 1;
 		};
 
@@ -109,7 +113,7 @@ class TrayMenu {
 				}
 			});
 			if(mountedStacks.indexOf(stack.id) == -1){
-				this.stackItems[index].status = StatusConverter.getStatusString(3);
+				this.stackItems[index].status = StatusConverter.getStateFromStatus('stopped');
 			}
 		});
 	}
