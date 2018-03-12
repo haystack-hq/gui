@@ -23,6 +23,7 @@
     "electron-packager": "^7.3.0"
   },
   "dependencies": {
+    "about-window": "^1.10.0",
     "chai": "^4.1.2",
     "chai-events": "0.0.1",
     "jsonfile": "^4.0.0",

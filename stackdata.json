@@ -204,11 +204,13 @@
       "created_by_id": null,
       "stack_file_location": null,
       "status": "running",
+      "mount_status": "active",
       "health": null,
       "services": [
         {
           "name": "myImageResource",
-          "status": "healthy",
+          "status": "running",
+          "health": "healthy",
           "error": null,
           "container": null,
           "stackfile_path": "/Users/andrew/fake/path/to/image/file",
@@ -216,11 +218,11 @@
             "path": "/this/is/a/test/mount/path",
             "status": "active"
           }
-
         },
         {
           "name": "myBuildResource",
-          "status": "unhealthy",
+          "status": "stopped",
+          "health": "unhealthy",
           "error": null,
           "container": null,
           "stackfile_path": "/Users/andrew/fake/path/to/build/file"

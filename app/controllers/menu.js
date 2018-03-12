@@ -13,7 +13,7 @@ class MenuController {
     init() {
         this.window = new BrowserWindow({
             width: 300,
-            height: 350,
+            height: 400,
             show: false,
             frame: false,
             fullscreenable: false,

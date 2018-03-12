@@ -3,7 +3,7 @@
     cursor: default;
 }
 .scroll-area {
-    height: calc(100% - 100px);
+    height: calc(100% - 130px);
     width: 300px;
     border-left: 1px solid #CCC;
     border-right: 1px solid #CCC;

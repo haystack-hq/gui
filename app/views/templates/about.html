@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../../assets/css/semantic.min.css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="../../../assets/css/globals.css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="../../../assets/css/about.css" media="screen" charset="utf-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <title>About Haystack</title>
+</head>
+<body>
+<div id="about-view" class="full-height ui grid">
+    <div class="row">
+        <div class="eight wide column logo-container">
+            <img src='../../../assets/images/haystack-black-logo.svg' />
+        </div>
+        <div class="eight wide column versions-container">
+            <div>
+            <img src='../../../assets/images/haystack-black-text.svg' />
+            </div>
+            <ul class="table details">
+                <li>
+                    <span class="label">version</span>
+                    <span class="value">1.0.0</span>
+                </li>
+                <li v-if="dockerVersion">
+                    <span class="label">docker version</span>
+                    <span class="value">{{ dockerVersion.Client.Version }}</span>
+                </li>
+                <li v-if="dockerVersion">
+                    <span class="label">docker build</span>
+                    <span class="value">{{ dockerVersion.Client.GitCommit }}</span>
+                </li>
+                <li v-if="dockerVersion">
+                    <span class="label">architecture</span>
+                    <span class="value">{{ dockerVersion.Client.Os }}/{{ dockerVersion.Client.Arch }}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        <span class="trans">©{{ new Date().getFullYear() }} Haystack, Inc. All rights reserved.</span>
+        <span><a href="#" onclick="MenuView.openDocs()">view documentation</a></span>
+    </div>
+</div>
+</body>
+</html>
+<script charset="utf-8">
+    let AboutView = require('../js/about');
+    let MenuView = require('../js/menu');
+    let about = new AboutView({
+        pageSelector: '#about-view'
+    });
+</script>

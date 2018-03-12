@@ -9,6 +9,7 @@ class StackMenuListItem {
         this.identifier = options.identifier;
         this.provider = options.provider;
         this.status = options.status;
+        this.mountStatus = options.mount_status;
         this.health = options.health;
         this.services = options.services;
         this.state = StatusConverter.getStateFromStatus(options.status);

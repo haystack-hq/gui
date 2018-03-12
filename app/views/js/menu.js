@@ -1,8 +1,9 @@
-const {ipcRenderer} = require('electron');
-const {app} = require('electron').remote;
+const {ipcRenderer, shell} = require('electron');
+const {app} = require('electron');
 const CommandRunner = require('../../helpers/commandRunner');
-const StackController = require('../../controllers/stack');
+const AboutController = require('../../controllers/about');
 const path = require('path');
+const openAboutWindow = require('about-window').default;
 
 class MenuView {
     constructor(options) {
@@ -27,6 +28,18 @@ class MenuView {
 
     static openStack(stack){
         ipcRenderer.send('stack-open', stack);
+    }
+
+    static openDocs(){
+        return shell.openExternal('https://docs.haystackhq.com');
+    }
+
+    static about(){
+        let aboutController = new AboutController({
+            icon: path.join(__dirname, '../../../assets/images/haystack-logo-black.svg'),
+            templateDirectory: path.join(__dirname, '../../../app/views/templates')
+        });
+        aboutController.show();
     }
 
     static exit(){

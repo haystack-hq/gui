@@ -31,6 +31,7 @@ class StackView {
 
     initView(){
         this.currentService = this.stack.services[0];
+        document.title = this.stack.identifier;
         this.view = new Vue({
             el: this.pageSelector,
             data: {

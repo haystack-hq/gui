@@ -10,75 +10,82 @@
 <body>
 <div id="stack-view" class="full-height">
     <div class="ui grid full-height services">
-        <div class="six wide column full-height">
-            <div class="ui vertical fluid tabular menu main tabs full-height">
-                <div class="item details">
-                    <div class="inner">
-                        <h2>{{ stack.identifier }}</h2>
-                        <div class="ui stack controls">
-                            <button class="circular ui icon button large" :disabled="stack.state != 'inactive' || stack.state == 'pending'"><i class="play icon"></i></button>
-                            <button class="circular ui icon button large" :disabled="stack.state == 'inactive'"><i class="stop icon"></i></button>
-                            <button class="circular ui icon button large" :disabled="stack.state == 'inactive'"><i class="pause icon"></i></button>
+        <div class="row full-height accomodate-docs">
+            <div class="six wide column full-height">
+                <div class="ui vertical fluid tabular menu main tabs full-height">
+                    <div class="item details">
+                        <div class="inner">
+                            <h2>{{ stack.identifier }}</h2>
+                            <div class="ui stack controls">
+                                <button class="circular ui icon button large" :disabled="stack.state != 'inactive' || stack.state == 'pending'"><i class="play icon"></i></button>
+                                <button class="circular ui icon button large" :disabled="stack.state == 'inactive'"><i class="stop icon"></i></button>
+                                <button class="circular ui icon button large" :disabled="stack.state == 'inactive'"><i class="pause icon"></i></button>
+                            </div>
+                            <h4 :class="stack.state">{{ stack.status }}</h4>
                         </div>
-                        <h4 :class="stack.state">{{ stack.status }}</h4>
+                    </div>
+                    <a class="item" v-for="service in stack.services" @click="selectService(service)" :class="{'active': currentService.name == service.name}">
+                        <div class="name">{{ service.name }}</div>
+                        <div class="status" :class="service.health">{{ service.health }}<span v-if="service.mount">, mounted</span></div>
+                    </a>
+                </div>
+            </div>
+            <div class="ten wide stretched column service-details">
+                <div class="inner" v-if="currentService != null">
+                    <div class="details">
+                        <table class="ui celled table">
+                            <thead>
+                                <tr>
+                                    <th colspan="3">{{ currentService.name }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="collapsing right aligned">Mode</td>
+                                    <td colspan="2">Local</td>
+                                </tr>
+                                <tr v-if="currentService.health">
+                                    <td class="collapsing right aligned">Health Check</td>
+                                    <td colspan="2" :class="currentService.health">{{ currentService.health }}</td>
+                                </tr>
+                                <tr v-if="currentService.stackfile_path">
+                                    <td class="collapsing right aligned">Haystack File</td>
+                                    <td colspan="2">{{ currentService.stackfile_path }}</td>
+                                </tr>
+                                <tr v-if="currentService.mount">
+                                    <td class="collapsing right aligned">Mount</td>
+                                    <td>{{ currentService.mount.path }}</td>
+                                    <td class="center aligned"><span :class="currentService.mount.status">{{ currentService.mount.status }}</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="ui top attached tabular menu service tabs">
+                        <div class="active item">Terminal</div>
+                        <div class="item">Logs</div>
+                    </div>
+                    <div class="ui bottom attached active tab segment service-controls">
+                        <div class="ui fluid action">
+                            <select name="whores" class="ui basic floating dropdown button">
+                                <option name="test">Execute a Pre-Defined Command</option>
+                            </select>
+                            <button class="ui teal button">
+                                Execute
+                            </button>
+                        </div>
+                        <div class="content">
+                            <div class="terminal">Last login: Fri Mar  9 10:16:47 on ttys004
+                                Andrews-MacBook-Pro-2:~ andrew$
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <a class="item" v-for="service in stack.services" @click="selectService(service)" :class="{'active': currentService.name == service.name}">
-                    <div class="name">{{ service.name }}</div>
-                    <div class="status" :class="service.status">{{ service.status }}<span v-if="service.mount">, mounted</span></div>
-                </a>
             </div>
         </div>
-        <div class="ten wide stretched column service-details">
-            <div class="inner" v-if="currentService != null">
-                <div class="details">
-                    <table class="ui celled striped table">
-                        <thead>
-                            <tr>
-                                <th colspan="3">{{ currentService.name }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="collapsing right aligned">Mode</td>
-                                <td colspan="2">Local</td>
-                            </tr>
-                            <tr v-if="currentService.status">
-                                <td class="collapsing right aligned">Health Check</td>
-                                <td colspan="2" :class="currentService.status">{{ currentService.status }}</td>
-                            </tr>
-                            <tr v-if="currentService.stackfile_path">
-                                <td class="collapsing right aligned">Haystack File</td>
-                                <td colspan="2">{{ currentService.stackfile_path }}</td>
-                            </tr>
-                            <tr v-if="currentService.mount">
-                                <td class="collapsing right aligned">Mount</td>
-                                <td>{{ currentService.mount.path }}</td>
-                                <td class="center aligned"><span :class="currentService.mount.status">{{ currentService.mount.status }}</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="ui top attached tabular menu">
-                    <div class="active item">Terminal</div>
-                    <div class="item">Logs</div>
-                </div>
-                <div class="ui bottom attached active tab segment service-controls">
-                    <div class="ui fluid action">
-                        <select name="whores" class="ui basic floating dropdown button">
-                            <option name="test">Execute a Pre-Defined Command</option>
-                        </select>
-                        <button class="ui teal button">
-                            Execute
-                        </button>
-                    </div>
-                    <div class="content">
-                        <div class="terminal">Last login: Fri Mar  9 10:16:47 on ttys004
-                            Andrews-MacBook-Pro-2:~ andrew$
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="footer">
+            <span><img src="../../../assets/images/haystack-logo-black.svg" class="logo-img"/></span>
+            <span>©{{ new Date().getFullYear() }} Haystack, Inc. All rights reserved.</span>
+            <span><a href="#" onclick="MenuView.openDocs()">view documentation</a></span>
         </div>
     </div>
 </div>
@@ -86,6 +93,7 @@
 </html>
 <script charset="utf-8">
     let StackView = require('../js/stack');
+    let MenuView = require('../js/menu');
     let menu = new StackView({
         pageSelector: '#stack-view'
     });

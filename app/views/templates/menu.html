@@ -22,7 +22,7 @@
             <div class="content" @click="openStack(stack)">
                 <span class="header">{{ stack.identifier }}</span>
                 <span v-if="stack.provider" class="provider">{{ stack.provider }}</span>
-                <span class="status" :class="stack.state">{{ stack.status }}</span>
+                <span class="status" :class="stack.state">{{ stack.status }}<span v-if="stack.mountStatus">, mounted</span></span>
             </div>
         </div>
         <div class="item no-stacks center full-height" v-if="!sortedStacks.length">
@@ -32,8 +32,11 @@
 </div>
 <footer class="list-footer">
     <div class="trayMenu ui list">
-        <div class="item">
+        <div class="item" onclick="MenuView.about()">
             <div class="content">About Haystack</div>
+        </div>
+        <div class="item" onclick="MenuView.openDocs()">
+            <div class="content">View Documentation</div>
         </div>
         <div class="item" onclick="MenuView.exit()">
             <div class="content">Exit</div>
