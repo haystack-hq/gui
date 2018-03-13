@@ -1,25 +1,25 @@
 body {
     background: #EEE;
 }
-#about-view > .row {
-    margin-top: 30px;
-}
 .logo-container,
 .versions-container {
     align-content: center;
 }
+.versions-container img {
+    width: 140px;
+}
+.logo-container {
+    text-align: center;
+}
 .logo-container img {
     vertical-align: middle;
-    margin: 0 50px;
+    margin: 55px auto 0 20px;
+    width: 120px;
 }
-.versions-container img {
-    width: 80%;
-    margin-top: 20px;
-}
-.versions-container {
+.wrap {
     position: absolute;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-53%);
 }
 .details {
     list-style-type: none;
@@ -47,11 +47,14 @@ body {
     padding: 10px 0;
     font-size: 12px;
 }
-.trans {
+.footer span {
     opacity: 0.5;
 }
 .footer a {
     text-decoration: underline;
     margin-left: 20px;
     opacity: 1;
+}
+.logo-image {
+    width: 100%;
 }

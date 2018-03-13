@@ -12,7 +12,7 @@ class AboutController {
 
     init() {
         this.window = new BrowserWindow({
-            width: 600,
+            width: 500,
             height: 300,
             useContentHeight: true,
             show: false,
