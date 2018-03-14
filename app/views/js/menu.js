@@ -1,6 +1,7 @@
 const {ipcRenderer, shell} = require('electron');
 const {app} = require('electron').remote;
 const AboutController = require('../../controllers/about');
+const StatusConverter = require('../../helpers/statusConverter');
 const path = require('path');
 
 class MenuView {
@@ -66,7 +67,10 @@ class MenuView {
         //listen for changes from the main process
         ipcRenderer.on('stack-list-change', (event, data) => {
             this.stacks = data;
-            this.stackList.stacks = data;
+
+            this.addState();
+
+            this.stackList.stacks = this.stacks;
             if(!this.tabs){
                 this.initTabs();
             } else if(this.tabs.currentTab) {
@@ -76,6 +80,14 @@ class MenuView {
         });
     }
 
+    addState(){
+        this.stacks.forEach(stack => {
+            if(stack.status){
+                stack.state = StatusConverter.getStateFromStatus(stack.status);
+            }
+        })
+    }
+
     initTabs(){
         this.tabs = new Vue({
             el: this.tabSelector,
@@ -83,15 +95,6 @@ class MenuView {
                 tabs: [
                     {
                         title: "My Stacks",
-                        filterStacks: "stacko"
-                    },
-                    {
-                        title: "Team Stacks",
-                        filterStacks: "tedst"
-                    },
-                    {
-                        title: "all",
-                        filterStacks: "s"
                     }
                 ],
                 currentTab: this.currentTab
@@ -111,7 +114,10 @@ class MenuView {
     selectTab(tab){
         this.tabs.currentTab = tab;
         this.stackList.stacks = this.stacks.filter(stack => {
-            return stack.identifier.indexOf(tab.filterStacks) > -1;
+            if(tab.filterStacks){
+                return stack.identifier.indexOf(tab.filterStacks) > -1;
+            }
+            return 1;
         });
     }
 }

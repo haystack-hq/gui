@@ -76,14 +76,9 @@ class StackView {
             methods: {
                 selectService: (service) => this.selectService(service),
                 removeStack: (stack) => this.removeStack(stack),
-                selectServiceTab: (service, tab) => this.selectServiceTab(service, tab),
-                isTabActive: function(str) {
-                    return this.activeServiceTabs[this.currentService.name] == str;
-                },
                 setSelectedTab: (tab) => {
                     this.view.selectedTab = tab;
                     this.currentService.selectedTab = tab;
-                    console.log('selected tab', this.view.selectedTab);
                 }
             }
         });
@@ -94,7 +89,7 @@ class StackView {
 
         ipcRenderer.on('stacks-updated', (event, data) => {
             this.stack = data.filter(stack => {
-                return stack.id == this.stack.id;
+                return stack._id == this.stack._id;
             })[0];
             this.view.stack = this.stack;
         });

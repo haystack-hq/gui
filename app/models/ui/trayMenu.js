@@ -1,8 +1,6 @@
 const {app, Menu, ipcMain} = require('electron');
-const ListItemConverter = require('../../helpers/listItemConverter');
 const MenuController = require('../../controllers/menu');
 const StackController = require('../../controllers/stack');
-const StatusConverter = require('../../helpers/statusConverter');
 
 const path = require('path');
 
@@ -15,7 +13,6 @@ class TrayMenu {
 		this.basePath = options.basePath;
 		this.menu = null;
 		this.stackItems = [];
-		this.mountItems = [];
 		this.icon = null;
 
 		this.templateDirectory = path.join(this.basePath, 'app/views/templates');
@@ -23,25 +20,8 @@ class TrayMenu {
 
 		this.createMenu();
 
-		//add new event listener: listens to status changes of individual mounts
-		//finds corresponding menu item and updates it
-		this.eventEmitter.on(this.mountChangeEvent, (result) => {
-			let converter = new ListItemConverter(result.items);
-			this.mountItems = converter.mounts_to_menu_items();
-
-			this.updateIcon();
-
-			this.eventEmitter.emit(this.stackChangeEvent, this.stackItems);
-		});
-
 		this.eventEmitter.on(this.stackChangeEvent, (result) => {
-			if(result.items){
-				let converter = new ListItemConverter(result.items);
-				this.stackItems = converter.stacks_to_menu_items();
-			}
-
-			//this.updateStacks();
-
+			this.stackItems = result.items;
 			this.menu.window.webContents.send(this.stackChangeEvent, this.stackItems);
 		});
 
@@ -90,8 +70,8 @@ class TrayMenu {
 	}
 
 	updateIcon() {
-		let pendingItems = this.mountItems.filter(item => {
-			return item.status == 'mount-pending';
+		let pendingItems = this.stackItems.filter(item => {
+			return item.status == 'provisioning';
 		});
 
 		if(pendingItems.length > 0){
@@ -99,23 +79,6 @@ class TrayMenu {
 		} else {
 			this.resetIcon();
 		}
-	}
-
-	updateStacks() {
-		let mountedStacks = [];
-		this.stackItems.forEach((stack, index) => {
-			this.mountItems.forEach(mount => {
-				if(stack.id == mount.id){
-					if(mountedStacks.indexOf(stack.id) == -1){
-						mountedStacks.push(stack.id);
-					}
-					this.stackItems[index].status = mount.status;
-				}
-			});
-			if(mountedStacks.indexOf(stack.id) == -1){
-				this.stackItems[index].status = StatusConverter.getStateFromStatus('stopped');
-			}
-		});
 	}
 }
 

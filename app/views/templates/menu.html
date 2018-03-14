@@ -22,7 +22,7 @@
             <div class="content" @click="openStack(stack)">
                 <span class="header">{{ stack.identifier }}</span>
                 <span v-if="stack.provider" class="provider">{{ stack.provider }}</span>
-                <span class="status" :class="stack.state">{{ stack.status }}<span v-if="stack.mountStatus">, mounted</span></span>
+                <span class="status" :class="stack.state">{{ stack.status }}<span v-if="stack.mount_status">, mounted</span></span>
             </div>
         </div>
         <div class="item no-stacks center full-height" v-if="!sortedStacks.length">
