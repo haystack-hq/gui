@@ -17,7 +17,7 @@
     <div class="stackList ui list divided full-height" id="stack-list">
         <div class="item hover hand" v-for="stack in sortedStacks">
             <div class="ui icon circle">
-                <button><i class="icon" :class="stack.state == 'inactive' ? 'play' : 'stop'" ></i></button>
+                <button><i class="icon" :class="stack.state == 'inactive' ? 'play' : 'pause'" ></i></button>
             </div>
             <div class="content" @click="openStack(stack)">
                 <span class="header">{{ stack.identifier }}</span>

@@ -25,6 +25,9 @@ class StackController {
 
         this.window.on('close', () => {
             this.window = null;
+            if(app.dock){
+                app.dock.hide();
+            }
         });
 
         //this will prevent users from reloading the window with keyboard shortcuts
@@ -42,7 +45,9 @@ class StackController {
         this.window.once('ready-to-show', () => {
             this.window.webContents.send('stack-load', this.stack);
             this.window.show();
-            app.dock.show();
+            if(app.dock){
+                app.dock.show();
+            }
         });
         this.window.focus();
     }

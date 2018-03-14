@@ -1,5 +1,6 @@
 #stack-view {
     background: #EEE;
+    cursor: default;
 }
 .ui.grid.services {
     position: absolute;
@@ -33,6 +34,12 @@
 .ui.tabular.menu.main.tabs {
     cursor: default;
     background: white;
+}
+.ui.tabular.menu .item {
+    cursor: default;
+}
+.ui.tabular.menu .item:hover {
+    cursor: default;
 }
 .ui.vertical.tabular.menu.main.tabs .item:not(.details),
 .ui.vertical.tabular.menu.main.tabs .item:not(.details).active {
@@ -97,6 +104,7 @@
 }
 .service-details .inner .details .table thead tr th {
     background: white;
+    cursor: default !important;
 }
 .service-details .service-controls {
     height: calc(100% - 275px);

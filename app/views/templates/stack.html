@@ -18,8 +18,8 @@
                             <h2>{{ stack.identifier }}</h2>
                             <div class="ui stack controls">
                                 <button class="circular ui icon button large" :disabled="stack.state != 'inactive' || stack.state == 'pending'"><i class="play icon"></i></button>
-                                <button class="circular ui icon button large" :disabled="stack.state == 'inactive'"><i class="stop icon"></i></button>
                                 <button class="circular ui icon button large" :disabled="stack.state == 'inactive'"><i class="pause icon"></i></button>
+                                <button class="circular ui icon button large" @click="removeStack(stack)"><i class="stop icon"></i></button>
                             </div>
                             <h4 :class="stack.state">{{ stack.status }}</h4>
                         </div>
@@ -61,22 +61,26 @@
                         </table>
                     </div>
                     <div class="ui top attached tabular menu service tabs">
-                        <div class="active item">Terminal</div>
-                        <div class="item">Logs</div>
+                        <div class="item" v-for="tab in serviceTabs" @click="setSelectedTab(tab)" :class="{'active': selectedTab == tab}">{{ tab.label }}</div>
                     </div>
                     <div class="ui bottom attached active tab segment service-controls">
-                        <div class="ui fluid action">
-                            <select name="whores" class="ui basic floating dropdown button">
-                                <option name="test">Execute a Pre-Defined Command</option>
-                            </select>
-                            <button class="ui teal button">
-                                Execute
-                            </button>
-                        </div>
-                        <div class="content">
-                            <div class="terminal">Last login: Fri Mar  9 10:16:47 on ttys004
-                                Andrews-MacBook-Pro-2:~ andrew$
+                        <div v-if="selectedTab.id == 'terminal'">
+                            <div class="ui fluid action">
+                                <select name="predefined" class="ui basic floating dropdown button">
+                                    <option name="test">Execute a Pre-Defined Command</option>
+                                </select>
+                                <button class="ui teal button">
+                                    Execute
+                                </button>
                             </div>
+                            <div class="content">
+                                <div class="terminal">Last login: Fri Mar  9 10:16:47 on ttys004
+                                    Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="selectedTab.id == 'logs'">
+                            {{ currentService.name }}
                         </div>
                     </div>
                 </div>

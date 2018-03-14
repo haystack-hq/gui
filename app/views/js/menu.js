@@ -1,9 +1,7 @@
 const {ipcRenderer, shell} = require('electron');
-const {app} = require('electron');
-const CommandRunner = require('../../helpers/commandRunner');
+const {app} = require('electron').remote;
 const AboutController = require('../../controllers/about');
 const path = require('path');
-const openAboutWindow = require('about-window').default;
 
 class MenuView {
     constructor(options) {

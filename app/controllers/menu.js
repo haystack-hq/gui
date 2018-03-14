@@ -1,4 +1,5 @@
 const {BrowserWindow} = require('electron');
+const {app} = require('electron');
 const path = require('path');
 
 class MenuController {

@@ -5,6 +5,9 @@ body {
 .versions-container {
     align-content: center;
 }
+.versions-container {
+    margin-left: -25px;
+}
 .versions-container img {
     width: 140px;
 }
@@ -46,6 +49,7 @@ body {
     width: 100%;
     padding: 10px 0;
     font-size: 12px;
+    margin-left: 5px;
 }
 .footer span {
     opacity: 0.5;
