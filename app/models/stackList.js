@@ -8,16 +8,28 @@ class StackList {
 		this.eventEmitter = options.eventEmitter;
 		this.onChangeEvent = options.onChangeEvent;
 		this.stackListFile = options.stackListFile;
+		this.agentInterface = options.agentInterface;
 
-		jsonFile.readFile(this.stackListFile, (err, obj) => {
-			this.eventEmitter.emit(this.onChangeEvent, {items: obj.stacks});
+		this.update();
+
+		this.eventEmitter.on('stack-stream-update', data => {
+			console.log(data);
+			this.update();
 		});
+	}
 
-		const listMonitor = new JsonWatch(this.stackListFile);
+	update() {
+		try {
+			this.agentInterface.getStacks((response, data) => {
+				let parsed = JSON.parse(data);
+				if(parsed){
+					this.eventEmitter.emit(this.onChangeEvent, {items: parsed});
+				}
+			});
+		} catch(ex){
+			console.log('eh');
+		}
 
-		listMonitor.on('cng', (path, before, after) => {
-			this.eventEmitter.emit(this.onChangeEvent, {items: after});
-		});
 	}
 }
 

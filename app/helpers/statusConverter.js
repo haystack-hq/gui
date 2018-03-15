@@ -8,7 +8,7 @@ class StatusConverter{
             'stopped': 'inactive'
         };
 
-        return statusMap[status];
+        return statusMap[status] ? statusMap[status] : status;
     }
 }
 module.exports = StatusConverter;

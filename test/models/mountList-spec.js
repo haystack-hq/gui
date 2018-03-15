@@ -2,6 +2,7 @@ const chai = require('chai');
 chai.use(require("chai-events"));
 
 const EventEmitter = require("events");
+const appEvents = new EventEmitter();
 
 const MockPsList = require('../mocks/mockPsList');
 const MockPsListSync = require('../mocks/mockPsListSync');
@@ -11,7 +12,6 @@ const Mount = require('../../app/models/mount');
 
 const assert = chai.assert;
 const should = chai.should();
-const appEvents = new EventEmitter();
 
 describe('mountList', function() {
 	it('should add item to list', function(){

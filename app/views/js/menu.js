@@ -94,7 +94,7 @@ class MenuView {
             data: {
                 tabs: [
                     {
-                        title: "My Stacks",
+                        title: "My Stacks"
                     }
                 ],
                 currentTab: this.currentTab

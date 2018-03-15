@@ -15,9 +15,9 @@ const TrayMenu = require('./app/models/ui/trayMenu');
 const ProcessWatcher = require('./app/models/processWatcherService');
 
 // Hide from dock
-if(app.dock){
-	app.dock.hide();
-}
+//if(app.dock){
+//	app.dock.hide();
+//}
 
 // Create the tray icon and initialize the menu
 app.on('ready', () => {
@@ -33,15 +33,18 @@ app.on('ready', () => {
 
 	ipcMain.on('dom-ready', () => {
 		let agentInterface = new AgentInterface({
-			url: 'http://google.com',
-			port: '80',
-			requestHandler: request
+			url: 'localhost',
+			port: '3059',
+			requestHandler: request,
+			eventEmitter: ipcMain,
+			protocol: 'http://'
 		});
 
 		let stackList = new StackList({
 			onChangeEvent: 'stack-list-change',
 			eventEmitter: ipcMain,
-			stackListFile: path.join(__dirname, 'stackdata.json')
+			stackListFile: path.join(__dirname, 'stackdata.json'),
+			agentInterface: agentInterface
 		});
 
 		let processWatcher = new ProcessWatcher({

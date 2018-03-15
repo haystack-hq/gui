@@ -21,7 +21,6 @@ class AboutView {
                 dockerVersion: null
             }
         });
-
     }
 
     getDockerVersion(){

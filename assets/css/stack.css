@@ -114,7 +114,11 @@
     margin-top: 15px;
     height: calc(100% - 55px);
 }
-.service-details .service-controls .content .terminal {
+.service-details .service-controls .content .logs {
+    overflow-x: scroll;
+}
+.service-details .service-controls .content .terminal,
+.service-details .service-controls .content .logs-inner {
     background: black;
     white-space: pre-line;
     color: #EEE;

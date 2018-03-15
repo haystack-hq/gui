@@ -18,7 +18,10 @@ class StackController {
             height: 900,
             width: 1200,
             minHeight: 700,
-            minWidth: 1000
+            minWidth: 1000,
+            webPreferences: {
+                backgroundThrottling: true
+            }
         });
         this.window.loadURL(`file://${path.join(this.templateDirectory, 'stack.html')}`);
         this.window.openDevTools({mode: 'detach'});
