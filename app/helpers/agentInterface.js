@@ -34,7 +34,7 @@ class AgentInterface {
 
         this.requestHandler(requestParams, (error, response, body) => {
             if(error){
-                throw new Error(error);
+                //throw new Error(error);
             } else {
                 callback(response, body);
             }
