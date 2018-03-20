@@ -19,26 +19,30 @@ describe('agentInterface', function() {
 
     it('should throw an error from a bad uri', function(){
         let agentInterface = new AgentInterface({
-            url: 'bad_uri',
-            port: '80',
+            url: 'localhost',
+            port: '3059',
             requestHandler: request,
-            eventEmitter: emitter
+            eventEmitter: emitter,
+            protocol: 'http:/'
         });
 
         chai.expect(() =>
             agentInterface.makeRequest('/', 'GET', (response, body) => {})
-        ).to.throw('Error: Invalid URI "bad_uri:80/"');
+        ).to.throw('Error: Invalid URI "http:/localhost:3059/"');
     });
 
     it('should make request successfully', function(done){
         let agentInterface = new AgentInterface({
-            url: 'http://google.com',
-            port: '80',
+            url: 'localhost',
+            port: '3059',
             requestHandler: request,
-            eventEmitter: emitter
+            eventEmitter: emitter,
+            protocol: 'http://'
         });
 
-        agentInterface.makeRequest('/', 'GET', (response, body) => {
+        agentInterface.makeRequest('/stacks', 'GET', (response, body) => {
+            agentInterface.hasError = true;
+            agentInterface.socket.close();
             chai.assert.equal(response.statusCode, 200);
             done();
         });
@@ -46,10 +50,11 @@ describe('agentInterface', function() {
 
     it('should attempt to remove a stack by ID', function(){
         let agentInterface = new AgentInterface({
-            url: 'http://google.com',
-            port: '80',
+            url: 'localhost',
+            port: '3059',
             requestHandler: request,
-            eventEmitter: emitter
+            eventEmitter: emitter,
+            protocol: 'http://'
         });
 
         let stack = {identifier: 'bar'};
@@ -58,6 +63,9 @@ describe('agentInterface', function() {
 
         setTimeout(function() {
             emitter.emit('remove-stack', this, stack);
+            agentInterface.hasError = false;
+            agentInterface.socket.close();
+            agentInterface.socket.url = 'bad://url';
         }, 500);
 
         return shouldEmit;
@@ -65,25 +73,18 @@ describe('agentInterface', function() {
 
     it('should attempt to retrieve a list of stacks', function(done){
         let agentInterface = new AgentInterface({
-            url: 'http://google.com',
-            port: '80',
+            url: 'localhost',
+            port: '3059',
             requestHandler: request,
-            eventEmitter: emitter
+            eventEmitter: emitter,
+            protocol: 'http://'
         });
 
         agentInterface.getStacks((response, body) => {
+            agentInterface.hasError = true;
+            agentInterface.socket.close();
             chai.assert.equal(response.statusCode, 200);
             done();
         });
-    }).timeout(5000);
-
-    it('should build a URL without a port', function(){
-        let agentInterface = new AgentInterface({
-            url: 'http://google.com',
-            requestHandler: request,
-            eventEmitter: emitter
-        });
-
-        chai.assert.equal(agentInterface.fullUrl, 'http://google.com')
     }).timeout(5000);
 });

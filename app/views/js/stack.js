@@ -89,7 +89,7 @@ class StackView {
 
         ipcRenderer.on('stacks-updated', (event, data) => {
             this.stack = data.filter(stack => {
-                return stack._id == this.stack._id;
+                return stack.identifier == this.stack.identifier;
             })[0];
             this.view.stack = this.stack;
         });

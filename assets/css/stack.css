@@ -109,22 +109,36 @@
 .service-details .service-controls {
     height: calc(100% - 275px);
     background: white;
+    position: relative;
 }
 .service-details .service-controls .content {
     margin-top: 15px;
     height: calc(100% - 55px);
 }
 .service-details .service-controls .content .logs {
-    overflow-x: scroll;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    overflow-y: auto;
+    overflow-x: auto;
+    background: #171d29;
+
+}
+.service-details .service-controls .content .logs::-webkit-scrollbar {
+    width: 5px;
+    height: 8px;
+    background-color: #eee; /* or add it to the track */
 }
 .service-details .service-controls .content .terminal,
 .service-details .service-controls .content .logs-inner {
-    background: black;
     white-space: pre-line;
     color: #EEE;
-    height: 100%;
-    padding: 10px;
+    font-size: 12px;
     font-family: "Monaco", monospace;
+    background: #171d29;
+    margin: 10px;
 }
 
 .logo-img {

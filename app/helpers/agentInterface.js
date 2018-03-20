@@ -4,6 +4,7 @@ class AgentInterface {
     constructor(options){
         if(typeof options == 'undefined' ||
             options.url == null ||
+            options.port == null ||
             options.requestHandler == null ||
             options.eventEmitter == null){
             throw new ReferenceError('Missing one of required properties.');
@@ -13,8 +14,11 @@ class AgentInterface {
         this.protocol = options.protocol;
         this.requestHandler = options.requestHandler;
         this.eventEmitter = options.eventEmitter;
+        this.socket = null;
+        this.connectedToDaemon = false;
+        this.hasError = false;
 
-        this.fullUrl = this.port ? this.protocol + this.url + ":" + this.port : this.protocol + this.url;
+        this.fullUrl = this.protocol + this.url + ":" + this.port;
 
         this.listen();
 
@@ -30,8 +34,7 @@ class AgentInterface {
 
         this.requestHandler(requestParams, (error, response, body) => {
             if(error){
-                console.log('hello~');
-                //throw new Error(error);
+                throw new Error(error);
             } else {
                 callback(response, body);
             }
@@ -45,7 +48,7 @@ class AgentInterface {
     }
 
     removeStack(identifier, callback){
-        return this.makeRequest(`/${identifier}`, 'DELETE', (response, body) => {
+        return this.makeRequest(`/stacks/${identifier}`, 'DELETE', (response, body) => {
             callback(response, body);
         });
     }
@@ -62,24 +65,41 @@ class AgentInterface {
         });
     }
 
+    disconnectedDaemon() {
+        this.connectedToDaemon = false;
+        setTimeout(() => {
+            this.attemptDaemonConnection();
+        }, 1000)
+    }
+
+    attemptDaemonConnection() {
+        if(!this.connectedToDaemon){
+            this.openSocket();
+        }
+    }
+
     openSocket(){
-        let hasError = false;
+        this.hasError = false;
 
-        const ws = new WebSocket(`ws://${this.url}:${this.port}/stacks/stream`);
+        this.socket = new WebSocket(`ws://${this.url}:${this.port}/stacks/stream`);
 
-        ws.on('message', (data) => {
-            console.log('get message', data);
+        this.socket.on('connection', (data) => {
+            this.connectedToDaemon = true;
             this.eventEmitter.emit('stack-stream-update', data);
         });
 
-        ws.on('error', function() {
-            console.log('Agent is not running');
-            hasError = true;
+        this.socket.on('message', (data) => {
+            this.eventEmitter.emit('stack-stream-update', data);
         });
 
-        ws.on('close', () => {
-            if(hasError === false){
-                console.log('on close');
+        this.socket.on('error', () => {
+            this.disconnectedDaemon();
+            this.hasError = true;
+        });
+
+        this.socket.on('close', () => {
+            if(this.hasError === false){
+                this.disconnectedDaemon();
                 this.openSocket();
             }
         });

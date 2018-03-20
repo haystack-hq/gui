@@ -7,6 +7,8 @@ chai.should();
 chai.use(chaiAsPromised);
 
 before(function () {
+    this.timeout(0);
+
     chaiAsPromised.transferPromiseness = app.transferPromiseness;
     return app.start();
 });
@@ -25,6 +27,6 @@ describe("menuController", function () {
         return app.client.element('.item.hover.hand:first-child').click();
     });
     it("set the page title to the name of the stack", function () {
-        return app.client.windowByIndex(2).element('#stack-view').getText('.item.details .inner h2').should.eventually.equal("A STACK YO");
+        return app.client.windowByIndex(2).element('#stack-view').getText('.item.details .inner h2').should.eventually.equal("test");
     });
 });
