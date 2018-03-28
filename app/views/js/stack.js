@@ -28,6 +28,7 @@ class StackView {
         //get the stack from the main thread controller
         ipcRenderer.on('stack-load', (event, data) => {
             this.stack = data;
+            this.initSocketMonitor();
             this.initView();
         });
     }
@@ -57,7 +58,6 @@ class StackView {
     }
 
     initView(){
-        let self = this;
         //set the first available service as selected
         this.currentService = this.stack.services[0];
         this.activeServiceTabs[this.currentService.name] = 'terminal';
@@ -71,7 +71,8 @@ class StackView {
                 currentService: this.currentService,
                 serviceTabs: this.serviceTabs,
                 activeServiceTabs: this.activeServiceTabs,
-                selectedTab: this.serviceTabs[0]
+                selectedTab: this.serviceTabs[0],
+                socketConnected: true
             },
             methods: {
                 selectService: (service) => this.selectService(service),
@@ -92,6 +93,11 @@ class StackView {
                 return stack.identifier == this.stack.identifier;
             })[0];
             this.view.stack = this.stack;
+        });
+    }
+    initSocketMonitor() {
+        ipcRenderer.on('socket-open', (event, data) => {
+            this.view.socketConnected = data.isOpen;
         });
     }
 }

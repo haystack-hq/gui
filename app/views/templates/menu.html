@@ -15,6 +15,17 @@
 </div>
 <div class="scroll-area">
     <div class="stackList ui list divided full-height" id="stack-list">
+        <div v-if="!socketConnected" class="daemon-disconnected">
+            <div>
+                <span class="title">Daemon Disconnected</span>
+                <div class="spinner">
+                    <div class="bounce1"></div>
+                    <div class="bounce2"></div>
+                    <div class="bounce3"></div>
+                </div>
+                <span class="sub">Attempting to Reconnect</span>
+            </div>
+        </div>
         <div class="item hover hand" v-for="stack in sortedStacks">
             <div class="ui icon circle">
                 <button><i class="icon" :class="stack.state == 'inactive' ? 'play' : 'pause'" ></i></button>

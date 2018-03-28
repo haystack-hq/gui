@@ -9,6 +9,17 @@
 </head>
 <body>
 <div id="stack-view" class="full-height">
+    <div v-if="!socketConnected" class="daemon-disconnected" :class="{'show': !socketConnected}">
+        <div>
+            <span class="title">Daemon Disconnected</span>
+            <div class="spinner">
+                <div class="bounce1"></div>
+                <div class="bounce2"></div>
+                <div class="bounce3"></div>
+            </div>
+            <span class="sub">Attempting to Reconnect</span>
+        </div>
+    </div>
     <div class="ui grid full-height services">
         <div class="row full-height accomodate-docs">
             <div class="six wide column full-height">

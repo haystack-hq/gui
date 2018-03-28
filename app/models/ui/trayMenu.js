@@ -9,6 +9,7 @@ class TrayMenu {
 		this.eventEmitter = options.eventEmitter;
 		this.mountChangeEvent = options.mountChangeEvent;
 		this.stackChangeEvent = options.stackChangeEvent;
+		this.socketOpenEvent = options.socketOpenEvent;
 		this.tray = options.tray;
 		this.basePath = options.basePath;
 		this.menu = null;
@@ -20,25 +21,11 @@ class TrayMenu {
 
 		this.createMenu();
 
-		this.eventEmitter.on(this.stackChangeEvent, (result) => {
-			this.stackItems = result.items;
-			this.menu.window.webContents.send(this.stackChangeEvent, this.stackItems);
-		});
+		this.onStackOpen();
 
-		//use the event emitter that is tied to the renderer processes
-		ipcMain.on('stack-open', (event, data) => {
-			let stackController = new StackController({
-				stack: data,
-				templateDirectory: this.templateDirectory
-			});
-			stackController.show();
-			stackController.window.webContents.send('stack-load', data);
-			ipcMain.on(this.stackChangeEvent, (event, data) => {
-				if(stackController.window){
-					stackController.window.webContents.send('stacks-updated', this.stackItems);
-				}
-			})
-		});
+		this.onSocketChange();
+
+		this.onStackChange();
 	}
 
 	createMenu() {
@@ -79,6 +66,44 @@ class TrayMenu {
 		} else {
 			this.resetIcon();
 		}
+	}
+
+	onStackChange() {
+		this.eventEmitter.on(this.stackChangeEvent, (result) => {
+			this.stackItems = result.items;
+
+			this.updateIcon();
+
+			this.menu.window.webContents.send(this.stackChangeEvent, this.stackItems);
+		});
+	}
+
+	onSocketChange() {
+		this.eventEmitter.on(this.socketOpenEvent, (result) => {
+			this.menu.window.webContents.send(this.socketOpenEvent, result);
+		});
+	}
+
+	onStackOpen() {
+		//use the event emitter that is tied to the renderer processes
+		ipcMain.on('stack-open', (event, data) => {
+			let stackController = new StackController({
+				stack: data,
+				templateDirectory: this.templateDirectory
+			});
+			stackController.show();
+			stackController.window.webContents.send('stack-load', data);
+			this.eventEmitter.on(this.stackChangeEvent, (event, data) => {
+				if(stackController.window){
+					stackController.window.webContents.send('stacks-updated', this.stackItems);
+				}
+			});
+			this.eventEmitter.on(this.socketOpenEvent, (result) => {
+				if(stackController.window){
+					stackController.window.webContents.send(this.socketOpenEvent, result);
+				}
+			});
+		});
 	}
 }
 

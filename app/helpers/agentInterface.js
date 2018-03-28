@@ -1,19 +1,21 @@
-const WebSocket = require('ws');
-
 class AgentInterface {
     constructor(options){
         if(typeof options == 'undefined' ||
             options.url == null ||
             options.port == null ||
             options.requestHandler == null ||
+            options.webSocketHandler == null ||
+            options.socketOpenEvent == null ||
             options.eventEmitter == null){
             throw new ReferenceError('Missing one of required properties.');
         }
         this.url = options.url;
         this.port = options.port;
         this.protocol = options.protocol;
+        this.webSocketHandler = options.webSocketHandler;
         this.requestHandler = options.requestHandler;
         this.eventEmitter = options.eventEmitter;
+        this.socketOpenEvent = options.socketOpenEvent;
         this.socket = null;
         this.connectedToDaemon = false;
         this.hasError = false;
@@ -67,6 +69,7 @@ class AgentInterface {
 
     disconnectedDaemon() {
         this.connectedToDaemon = false;
+
         setTimeout(() => {
             this.attemptDaemonConnection();
         }, 1000)
@@ -81,11 +84,12 @@ class AgentInterface {
     openSocket(){
         this.hasError = false;
 
-        this.socket = new WebSocket(`ws://${this.url}:${this.port}/stacks/stream`);
+        this.socket = new this.webSocketHandler(`ws://${this.url}:${this.port}/stacks/stream`);
 
-        this.socket.on('connection', (data) => {
+        this.socket.on('open', (data) => {
             this.connectedToDaemon = true;
             this.eventEmitter.emit('stack-stream-update', data);
+            this.eventEmitter.emit(this.socketOpenEvent, {isOpen: this.connectedToDaemon});
         });
 
         this.socket.on('message', (data) => {
@@ -100,9 +104,10 @@ class AgentInterface {
         this.socket.on('close', () => {
             if(this.hasError === false){
                 this.disconnectedDaemon();
-                this.openSocket();
             }
         });
+
+        this.eventEmitter.emit(this.socketOpenEvent, {isOpen: this.connectedToDaemon});
     }
 }
 

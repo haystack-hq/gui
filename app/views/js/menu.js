@@ -16,8 +16,10 @@ class MenuView {
         this.stackList = null;
         this.stackListSelector = options.stackListSelector;
         this.tabSelector = options.tabSelector;
+        this.aboutWindow = null;
 
         this.initStackList();
+        this.initSocketMonitor();
 
         //once the DOM is ready, we fire off the main event to monitor mounts
         document.addEventListener('DOMContentLoaded', () => {
@@ -34,11 +36,15 @@ class MenuView {
     }
 
     static about(){
-        let aboutController = new AboutController({
-            icon: path.join(__dirname, '../../../assets/images/haystack-logo-black.svg'),
-            templateDirectory: path.join(__dirname, '../../../app/views/templates')
-        });
-        aboutController.show();
+        if(this.aboutWindow && this.aboutWindow.window){
+            this.aboutWindow.window.focus();
+        } else {
+            this.aboutWindow = new AboutController({
+                icon: path.join(__dirname, '../../../assets/images/haystack-logo-black.svg'),
+                templateDirectory: path.join(__dirname, '../../../app/views/templates')
+            });
+            this.aboutWindow.show();
+        }
     }
 
     static exit(){
@@ -52,7 +58,8 @@ class MenuView {
         this.stackList = new Vue({
             el: this.stackListSelector,
             data: {
-                stacks: this.stacks
+                stacks: this.stacks,
+                socketConnected: false
             },
             methods: {
                 openStack: (stack) => {MenuView.openStack(stack)}
@@ -118,6 +125,12 @@ class MenuView {
                 return stack.identifier.indexOf(tab.filterStacks) > -1;
             }
             return 1;
+        });
+    }
+
+    initSocketMonitor() {
+        ipcRenderer.on('socket-open', (event, data) => {
+            this.stackList.socketConnected = data.isOpen;
         });
     }
 }

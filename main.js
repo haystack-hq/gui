@@ -1,6 +1,7 @@
 const {app, Tray, Menu, ipcMain} = require('electron');
 const EventEmitter = require('events');
 const request = require('request');
+const WebSocket = require('ws');
 
 const path = require('path');
 const assetsDirectory = path.join(__dirname, 'assets');
@@ -15,12 +16,14 @@ const TrayMenu = require('./app/models/ui/trayMenu');
 const ProcessWatcher = require('./app/models/processWatcherService');
 
 // Hide from dock
-//if(app.dock){
-//	app.dock.hide();
-//}
+if(app.dock){
+	app.dock.hide();
+}
 
 // Create the tray icon and initialize the menu
 app.on('ready', () => {
+	app.setName('Haystack Toolbar');
+
 	let tray = new Tray(path.join(imgDirectory, 'logoTemplate.png'));
 
 	let menu = new TrayMenu({
@@ -28,6 +31,7 @@ app.on('ready', () => {
 		eventEmitter: ipcMain,
 		mountChangeEvent: 'mount-list-change',
 		stackChangeEvent: 'stack-list-change',
+		socketOpenEvent: 'socket-open',
 		basePath: __dirname
 	});
 
@@ -36,7 +40,9 @@ app.on('ready', () => {
 			url: 'localhost',
 			port: '3059',
 			requestHandler: request,
+			webSocketHandler: WebSocket,
 			eventEmitter: ipcMain,
+			socketOpenEvent: 'socket-open',
 			protocol: 'http://'
 		});
 
@@ -47,15 +53,9 @@ app.on('ready', () => {
 			agentInterface: agentInterface
 		});
 
-		let processWatcher = new ProcessWatcher({
-			processMonitor: require('ps-list')
-		});
-
-		let mountList = new MountList({
-			processWatcher: processWatcher,
-			onChangeEvent: 'mount-list-change',
-			eventEmitter: ipcMain
+		app.on('before-quit', () => {
+			agentInterface.hasError = true; //stops the connection from retrying
+			agentInterface.socket.close();
 		});
 	});
-	app.setName('Haystack Toolbar');
 });

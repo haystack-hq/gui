@@ -1,6 +1,8 @@
 const chai = require('chai');
 chai.use(require("chai-events"));
 const request = require('request');
+const WebSocket = require('ws');
+
 
 const AgentInterface = require('../../app/helpers/agentInterface');
 const EventEmitter = require("events");
@@ -22,6 +24,7 @@ describe('agentInterface', function() {
             url: 'localhost',
             port: '3059',
             requestHandler: request,
+            webSocketHandler: WebSocket,
             eventEmitter: emitter,
             protocol: 'http:/'
         });
@@ -35,6 +38,7 @@ describe('agentInterface', function() {
         let agentInterface = new AgentInterface({
             url: 'localhost',
             port: '3059',
+            webSocketHandler: WebSocket,
             requestHandler: request,
             eventEmitter: emitter,
             protocol: 'http://'
@@ -52,6 +56,7 @@ describe('agentInterface', function() {
         let agentInterface = new AgentInterface({
             url: 'localhost',
             port: '3059',
+            webSocketHandler: WebSocket,
             requestHandler: request,
             eventEmitter: emitter,
             protocol: 'http://'
@@ -75,6 +80,7 @@ describe('agentInterface', function() {
         let agentInterface = new AgentInterface({
             url: 'localhost',
             port: '3059',
+            webSocketHandler: WebSocket,
             requestHandler: request,
             eventEmitter: emitter,
             protocol: 'http://'
