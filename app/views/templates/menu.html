@@ -15,15 +15,16 @@
 </div>
 <div class="scroll-area">
     <div class="stackList ui list divided full-height" id="stack-list">
-        <div v-if="!socketConnected" class="daemon-disconnected">
-            <div>
-                <span class="title">Daemon Disconnected</span>
+        <div v-if="!socketConnected" class="error modal">
+            <div class="content bold">
+                <i class="exclamation triangle icon huge block center"></i>
+                <h1 class="title large text header">Unable to connect to Haystack Daemon</h1>
                 <div class="spinner">
                     <div class="bounce1"></div>
                     <div class="bounce2"></div>
                     <div class="bounce3"></div>
                 </div>
-                <span class="sub">Attempting to Reconnect</span>
+                <span class="sub medium text">Attempting to Reconnect</span>
             </div>
         </div>
         <div class="item hover hand" v-for="stack in sortedStacks">
@@ -33,7 +34,7 @@
             <div class="content" @click="openStack(stack)">
                 <span class="header">{{ stack.identifier }}</span>
                 <span v-if="stack.provider" class="provider">{{ stack.provider }}</span>
-                <span class="status" :class="stack.state">{{ stack.status }}<span v-if="stack.mount_status">, mounted</span></span>
+                <span class="status" :class="stack.state">{{ stack.status }}<span v-if="stack.health">, <span :class="stack.health">{{stack.health}}</span></span><span v-if="stack.mount_status">, mounted</span></span>
             </div>
         </div>
         <div class="item no-stacks center full-height" v-if="!sortedStacks.length">

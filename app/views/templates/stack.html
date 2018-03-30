@@ -9,15 +9,16 @@
 </head>
 <body>
 <div id="stack-view" class="full-height">
-    <div v-if="!socketConnected" class="daemon-disconnected" :class="{'show': !socketConnected}">
-        <div>
-            <span class="title">Daemon Disconnected</span>
+    <div v-if="!socketConnected" class="error modal" :class="{'show': !socketConnected}">
+        <div class="content bold">
+            <i class="exclamation triangle icon huge block center"></i>
+            <h1 class="title large text header">Unable to connect to Haystack Daemon</h1>
             <div class="spinner">
                 <div class="bounce1"></div>
                 <div class="bounce2"></div>
                 <div class="bounce3"></div>
             </div>
-            <span class="sub">Attempting to Reconnect</span>
+            <span class="sub medium text">Attempting to Reconnect</span>
         </div>
     </div>
     <div class="ui grid full-height services">
@@ -37,7 +38,7 @@
                     </div>
                     <a class="item" v-for="service in stack.services" @click="selectService(service)" :class="{'active': currentService.name == service.name}">
                         <div class="name">{{ service.name }}</div>
-                        <div class="status" :class="service.health">{{ service.health }}<span v-if="service.mount">, mounted</span></div>
+                        <div class="status health" :class="service.is_healthy ? 'healthy' : 'unhealthy'">{{ service.is_healthy ? 'healthy' : 'unhealthy' }}<span v-if="service.mount">, mounted</span></div>
                     </a>
                 </div>
             </div>
@@ -55,13 +56,9 @@
                                     <td class="collapsing right aligned">Mode</td>
                                     <td colspan="2">Local</td>
                                 </tr>
-                                <tr v-if="currentService.health">
+                                <tr v-if="typeof currentService.is_healthy != 'undefined'">
                                     <td class="collapsing right aligned">Health Check</td>
-                                    <td colspan="2" :class="currentService.health">{{ currentService.health }}</td>
-                                </tr>
-                                <tr v-if="currentService.stackfile_path">
-                                    <td class="collapsing right aligned">Haystack File</td>
-                                    <td colspan="2">{{ currentService.stackfile_path }}</td>
+                                    <td colspan="2" :class="currentService.is_healthy ? 'healthy' : 'unhealthy'">{{ currentService.is_healthy ? 'healthy' : 'unhealthy' }}</td>
                                 </tr>
                                 <tr v-if="currentService.mount">
                                     <td class="collapsing right aligned">Mount</td>

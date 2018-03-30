@@ -1,8 +1,9 @@
+const path = require('path');
+
 class AgentInterface {
     constructor(options){
         if(typeof options == 'undefined' ||
             options.url == null ||
-            options.port == null ||
             options.requestHandler == null ||
             options.webSocketHandler == null ||
             options.socketOpenEvent == null ||
@@ -10,7 +11,7 @@ class AgentInterface {
             throw new ReferenceError('Missing one of required properties.');
         }
         this.url = options.url;
-        this.port = options.port;
+        this.port = options.port ? options.port : this.getPort();
         this.protocol = options.protocol;
         this.webSocketHandler = options.webSocketHandler;
         this.requestHandler = options.requestHandler;
@@ -21,6 +22,8 @@ class AgentInterface {
         this.hasError = false;
 
         this.fullUrl = this.protocol + this.url + ":" + this.port;
+
+        console.log(this.fullUrl);
 
         this.listen();
 
@@ -108,6 +111,11 @@ class AgentInterface {
         });
 
         this.eventEmitter.emit(this.socketOpenEvent, {isOpen: this.connectedToDaemon});
+    }
+
+    getPort() {
+        let config_path = path.join(process.env.HOME + '.haystack/config.json');
+        console.log(config_path);
     }
 }
 

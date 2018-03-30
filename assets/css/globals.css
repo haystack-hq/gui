@@ -35,34 +35,24 @@ h2, h4 {
 .active:not(.tab), .healthy {
     color: #00a000;
 }
-.daemon-disconnected {
+.error.modal {
     position: absolute;
     top: 0;
     left: 0;
     height: calc(100% - 85px);
     width: 100%;
-    background: rgba(0, 0, 0, .3);
+    background: rgba(0, 0, 0, .8);
     z-index: 10000;
     text-align: center;
+    color: #CCC;
 }
-.daemon-disconnected > div {
+.error.modal > .content {
     position: relative;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(0, 0, 0, .8);
     margin: 0 20px;
     padding: 20px 0;
     border-radius: 20px;
-}
-.daemon-disconnected .title {
-    color: #eb0000;
-    font-weight: bold;
-    font-size: 20px;
-}
-.daemon-disconnected .sub {
-    color: #ccc;
-    font-weight: bold;
-    font-size: 14px;
 }
 .spinner {
     margin: 20px auto;
@@ -104,6 +94,25 @@ h2, h4 {
           transform: scale(1.0);
       }
 }
-.show {
+.show,
+.block {
     display: block !important;
+}
+.icon.large {
+    font-size: 90px;
+}
+.large.text {
+    font-size: 16px;
+}
+.medium.text {
+    font-size: 14px;
+}
+.bold {
+    font-weight: bold;
+}
+.center,
+i.center {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
 }
