@@ -1,4 +1,6 @@
 const path = require('path');
+const jsonFile = require('jsonfile');
+
 
 class AgentInterface {
     constructor(options){
@@ -11,7 +13,6 @@ class AgentInterface {
             throw new ReferenceError('Missing one of required properties.');
         }
         this.url = options.url;
-        this.port = options.port ? options.port : this.getPort();
         this.protocol = options.protocol;
         this.webSocketHandler = options.webSocketHandler;
         this.requestHandler = options.requestHandler;
@@ -21,13 +22,12 @@ class AgentInterface {
         this.connectedToDaemon = false;
         this.hasError = false;
 
-        this.fullUrl = this.protocol + this.url + ":" + this.port;
+        this.getPort(options.port, () => {
+            this.fullUrl = this.protocol + this.url + ":" + this.port;
+            this.listen();
+            this.openSocket();
+        });
 
-        console.log(this.fullUrl);
-
-        this.listen();
-
-        this.openSocket();
     }
 
     makeRequest(endpoint, method, callback) {
@@ -113,9 +113,17 @@ class AgentInterface {
         this.eventEmitter.emit(this.socketOpenEvent, {isOpen: this.connectedToDaemon});
     }
 
-    getPort() {
-        let config_path = path.join(process.env.HOME + '.haystack/config.json');
-        console.log(config_path);
+    getPort(defaultPort, callback) {
+        if(defaultPort){
+            this.port = defaultPort;
+        }
+        let config_path = path.join(process.env.HOME + '/.haystack/config.json');
+        jsonFile.readFile(config_path, (err, obj) => {
+            if(!err) {
+                this.port = obj.AGENT_PORT;
+                callback();
+            }
+        });
     }
 }
 

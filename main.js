@@ -38,7 +38,6 @@ app.on('ready', () => {
 	ipcMain.on('dom-ready', () => {
 		let agentInterface = new AgentInterface({
 			url: 'localhost',
-			port: 45601,
 			requestHandler: request,
 			webSocketHandler: WebSocket,
 			eventEmitter: ipcMain,

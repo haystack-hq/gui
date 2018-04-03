@@ -100,27 +100,24 @@
     height: 100%;
 }
 .service-details .inner .details {
-    min-height: 215px;
+    min-height: 230px;
 }
 .service-details .inner .details .table thead tr th {
     background: white;
     cursor: default !important;
 }
 .service-details .service-controls {
-    height: calc(100% - 275px);
-    background: white;
+    height: calc(100% - 214px);
     position: relative;
-}
-.service-details .service-controls .content {
-    margin-top: 15px;
-    height: calc(100% - 55px);
+    margin-right: -28px;
+    margin-left: -28px;
 }
 .service-details .service-controls .content .logs {
     position: absolute;
     top: 20px;
-    left: 20px;
-    right: 20px;
-    bottom: 20px;
+    left: 0;
+    right: 0;
+    bottom: 0;
     overflow-y: auto;
     overflow-x: auto;
     background: #171d29;

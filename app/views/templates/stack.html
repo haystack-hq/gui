@@ -38,13 +38,27 @@
                     </div>
                     <a class="item" v-for="service in stack.services" @click="selectService(service)" :class="{'active': currentService.name == service.name}">
                         <div class="name">{{ service.name }}</div>
-                        <div class="status health" :class="service.is_healthy ? 'healthy' : 'unhealthy'">{{ service.is_healthy ? 'healthy' : 'unhealthy' }}<span v-if="service.mount">, mounted</span></div>
+                        <div class="status health" :class="service.is_healthy ? 'healthy' : 'unhealthy'">{{ currentService.container_status }}, {{ service.is_healthy ? 'healthy' : 'unhealthy' }}<span v-if="service.mount">, mounted</span></div>
                     </a>
                 </div>
             </div>
             <div class="ten wide stretched column service-details">
                 <div class="inner" v-if="currentService != null">
                     <div class="details">
+                        <div class="ui main menu">
+                            <a class="bug popup icon item" href="javascript:;">
+                                <i class="icon" :class="currentService.is_running? 'pause' : 'play'"></i>
+                            </a>
+                            <a class="bug popup icon item" href="javascript:;">
+                                <i class="sync alternate icon"></i>
+                            </a>
+                            <a class="bug popup icon item" href="javascript:;">
+                                <i class="terminal icon"></i>
+                            </a>
+                            <div class="item right floated">
+                                <span :class="currentService.is_healthy ? 'healthy' : 'unhealthy'"> {{ currentService.container_status }}</span>
+                            </div>
+                        </div>
                         <table class="ui celled table">
                             <thead>
                                 <tr>
@@ -68,71 +82,54 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="ui top attached tabular menu service tabs">
-                        <div class="item" v-for="tab in serviceTabs" @click="setSelectedTab(tab)" :class="{'active': selectedTab == tab}">{{ tab.label }}</div>
-                    </div>
-                    <div class="ui bottom attached active tab segment service-controls">
-                        <div v-if="selectedTab.id == 'terminal'">
-                            <div class="ui fluid action">
-                                <select name="predefined" class="ui basic floating dropdown button">
-                                    <option name="test">Execute a Pre-Defined Command</option>
-                                </select>
-                                <button class="ui teal button">
-                                    Execute
-                                </button>
-                            </div>
-                            <div class="content">
-                                <div class="terminal">Last login: Fri Mar  9 10:16:47 on ttys004
+                    <!--<div class="ui top attached tabular menu service tabs">-->
+                        <!--<div class="item" v-for="tab in serviceTabs" @click="setSelectedTab(tab)" :class="{'active': selectedTab == tab}">{{ tab.label }}</div>-->
+                    <!--</div>-->
+                    <div class="ui bottom attached active tab service-controls">
+                        <div class="content">
+                            <div class="logs">
+                                <div class="logs-inner">Last login: Fri Mar  9 10:16:47 on ttys004
                                     Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                </div>
-                            </div>
-                        </div>
-                        <div v-if="selectedTab.id == 'logs'">
-                            <div class="content">
-                                <div class="logs">
-                                    <div class="logs-inner">Last login: Fri Mar  9 10:16:47 on ttys004
-                                        Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                        Last login: Fri Mar  9 10:16:47 on ttys004
-                                        Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                        Last login: Fri Mar  9 10:16:47 on ttys004
-                                        Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                        Last login: Fri Mar  9 10:16:47 on ttys004
-                                        Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                        Last login: Fri Mar  9 10:16:47 on ttys004
-                                        Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                        Last login: Fri Mar  9 10:16:47 on ttys004
-                                        Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                        Last login: Fri Mar  9 10:16:47 on ttys004
-                                        Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                        Last login: Fri Mar  9 10:16:47 on ttys004
-                                        Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                        Last login: Fri Mar  9 10:16:47 on ttys004
-                                        Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                        Last login: Fri Mar  9 10:16:47 on ttys004
-                                        Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                        Last login: Fri Mar  9 10:16:47 on ttys004
-                                        Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                        Last login: Fri Mar  9 10:16:47 on ttys004
-                                        Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                        Last login: Fri Mar  9 10:16:47 on ttys004
-                                        Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                        Last login: Fri Mar  9 10:16:47 on ttys004
-                                        Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                        Last login: Fri Mar  9 10:16:47 on ttys004
-                                        Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                        Last login: Fri Mar  9 10:16:47 on ttys004
-                                        Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                        Last login: Fri Mar  9 10:16:47 on ttys004
-                                        Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                        Last login: Fri Mar  9 10:16:47 on ttys004
-                                        Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                        Last login: Fri Mar  9 10:16:47 on ttys004
-                                        Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                        Last login: Fri Mar  9 10:16:47 on ttys004
-                                        Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                        Last login: Fri Mar  9 10:16:47 on ttys004
-                                        Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
-                                    </div>
+                                    Last login: Fri Mar  9 10:16:47 on ttys004
+                                    Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
+                                    Last login: Fri Mar  9 10:16:47 on ttys004
+                                    Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
+                                    Last login: Fri Mar  9 10:16:47 on ttys004
+                                    Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
+                                    Last login: Fri Mar  9 10:16:47 on ttys004
+                                    Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
+                                    Last login: Fri Mar  9 10:16:47 on ttys004
+                                    Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
+                                    Last login: Fri Mar  9 10:16:47 on ttys004
+                                    Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
+                                    Last login: Fri Mar  9 10:16:47 on ttys004
+                                    Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
+                                    Last login: Fri Mar  9 10:16:47 on ttys004
+                                    Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
+                                    Last login: Fri Mar  9 10:16:47 on ttys004
+                                    Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
+                                    Last login: Fri Mar  9 10:16:47 on ttys004
+                                    Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
+                                    Last login: Fri Mar  9 10:16:47 on ttys004
+                                    Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
+                                    Last login: Fri Mar  9 10:16:47 on ttys004
+                                    Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
+                                    Last login: Fri Mar  9 10:16:47 on ttys004
+                                    Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
+                                    Last login: Fri Mar  9 10:16:47 on ttys004
+                                    Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
+                                    Last login: Fri Mar  9 10:16:47 on ttys004
+                                    Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
+                                    Last login: Fri Mar  9 10:16:47 on ttys004
+                                    Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
+                                    Last login: Fri Mar  9 10:16:47 on ttys004
+                                    Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
+                                    Last login: Fri Mar  9 10:16:47 on ttys004
+                                    Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
+                                    Last login: Fri Mar  9 10:16:47 on ttys004
+                                    Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
+                                    Last login: Fri Mar  9 10:16:47 on ttys004
+                                    Andrews-MacBook-Pro-2:~ andrew$ {{ currentService.name }}
                                 </div>
                             </div>
                         </div>
