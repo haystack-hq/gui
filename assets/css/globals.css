@@ -116,3 +116,6 @@ i.center {
     margin-left: auto;
     margin-right: auto;
 }
+.drop-shadow {
+    box-shadow: 0 1px 2px 0 rgba(34,36,38,.15) !important;
+}

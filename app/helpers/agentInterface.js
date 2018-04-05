@@ -24,6 +24,7 @@ class AgentInterface {
 
         this.getPort(options.port, () => {
             this.fullUrl = this.protocol + this.url + ":" + this.port;
+            console.log(this.fullUrl);
             this.listen();
             this.openSocket();
         });
@@ -39,7 +40,7 @@ class AgentInterface {
 
         this.requestHandler(requestParams, (error, response, body) => {
             if(error){
-                //throw new Error(error);
+                console.log(error);
             } else {
                 callback(response, body);
             }
@@ -113,7 +114,7 @@ class AgentInterface {
         this.eventEmitter.emit(this.socketOpenEvent, {isOpen: this.connectedToDaemon});
     }
 
-    getPort(defaultPort, callback) {
+    getPort(defaultPort = null, callback = null) {
         if(defaultPort){
             this.port = defaultPort;
         }
@@ -121,7 +122,11 @@ class AgentInterface {
         jsonFile.readFile(config_path, (err, obj) => {
             if(!err) {
                 this.port = obj.AGENT_PORT;
-                callback();
+                if(callback) {
+                    callback();
+                } else {
+                    return obj.AGENT_PORT;
+                }
             }
         });
     }

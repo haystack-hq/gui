@@ -11,7 +11,6 @@ class StackView {
         this.view = null;
         this.stack = null;
         this.currentService = null;
-        this.activeServiceTabs = {};
         this.pageSelector = options.pageSelector;
         this.window = remote.getCurrentWindow();
         this.serviceTabs = [
@@ -30,6 +29,7 @@ class StackView {
             this.stack = data;
             this.initSocketMonitor();
             this.initView();
+            window.addEventListener("resize", StackView.scrollLogsToBottom);
         });
     }
 
@@ -42,6 +42,7 @@ class StackView {
         this.currentService = service;
         this.view.currentService = this.currentService;
         this.view.selectedTab = this.currentService.selectedTab ? this.currentService.selectedTab : this.serviceTabs[0];
+        StackView.scrollLogsToBottom();
     }
 
     /**
@@ -59,9 +60,6 @@ class StackView {
 
     initView(){
         //set the first available service as selected
-        this.currentService = this.stack.services[0];
-        this.activeServiceTabs[this.currentService.name] = 'terminal';
-
         document.title = this.stack.identifier;
 
         this.view = new Vue({
@@ -70,12 +68,12 @@ class StackView {
                 stack: this.stack,
                 currentService: this.currentService,
                 serviceTabs: this.serviceTabs,
-                activeServiceTabs: this.activeServiceTabs,
                 selectedTab: this.serviceTabs[0],
                 socketConnected: true
             },
             methods: {
                 selectService: (service) => this.selectService(service),
+                deselectServices: () => { this.view.currentService = null },
                 removeStack: (stack) => this.removeStack(stack),
                 setSelectedTab: (tab) => {
                     this.view.selectedTab = tab;
@@ -83,10 +81,6 @@ class StackView {
                 }
             }
         });
-
-        this.currentService.selectedTab = this.view.selectedTab;
-        //select the first tab after loading
-        this.view.selectService(this.currentService);
 
         ipcRenderer.on('stacks-updated', (event, data) => {
             this.stack = data.filter(stack => {
@@ -99,6 +93,12 @@ class StackView {
         ipcRenderer.on('socket-open', (event, data) => {
             this.view.socketConnected = data.isOpen;
         });
+    }
+    static scrollLogsToBottom() {
+        let logWindow = document.getElementsByClassName('logs')[0];
+        if(logWindow){
+            logWindow.scrollTop = logWindow.scrollHeight;
+        }
     }
 }
 

@@ -5,8 +5,6 @@ class StackList {
 		this.stackListFile = options.stackListFile;
 		this.agentInterface = options.agentInterface;
 
-		this.update();
-
 		this.eventEmitter.on('stack-stream-update', data => this.update());
 	}
 
